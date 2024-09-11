@@ -61,12 +61,9 @@ const HomePage = () => {
         </div>
       </nav>
 
-      <div className="bg-white py-8">
-        <div className="Pokemon-categories">
-          <h3>Pokemon categories</h3>
-          <PokemonCategory />
-        </div>
-        <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="bg-white py-2 gap-4 ">
+        <PokemonCategory />
+        <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 py-4">
           {pokemonData.map((pokemon) => (
             <div key={pokemon.name} className="bg-red-100 p-4 rounded shadow">
               <h2 className="text-xl font-semibold text-red-500 capitalize">
