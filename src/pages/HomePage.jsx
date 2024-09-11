@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import PokemonCategory from "./PokemonCategory";
 
 const HomePage = () => {
   const [pokemonData, setPokemonData] = useState([]);
@@ -7,7 +8,9 @@ const HomePage = () => {
   useEffect(() => {
     const fetchPokemonData = async () => {
       try {
-        const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=200");
+        const response = await fetch(
+          "https://pokeapi.co/api/v2/pokemon?limit=200"
+        );
         const data = await response.json();
         setPokemonData(data.results);
       } catch (error) {
@@ -30,24 +33,39 @@ const HomePage = () => {
             <Link to="/">Pokémon Battle</Link>
           </div>
           <div className="space-x-4">
-            <Link to="/" className="hover:bg-red-400 px-3 py-2 rounded transition">
+            <Link
+              to="/"
+              className="hover:bg-red-400 px-3 py-2 rounded transition"
+            >
               Home
             </Link>
-            <Link to="/Myroster" className="hover:bg-red-400 px-3 py-2 rounded transition">
+            <Link
+              to="/Myroster"
+              className="hover:bg-red-400 px-3 py-2 rounded transition"
+            >
               My Roster
             </Link>
-            <Link to="/battle" className="hover:bg-red-400 px-3 py-2 rounded transition">
+            <Link
+              to="/battle"
+              className="hover:bg-red-400 px-3 py-2 rounded transition"
+            >
               Battle
             </Link>
-            <Link to="/leaderboard" className="hover:bg-red-400 px-3 py-2 rounded transition">
+            <Link
+              to="/leaderboard"
+              className="hover:bg-red-400 px-3 py-2 rounded transition"
+            >
               Leaderboard
             </Link>
-
           </div>
         </div>
       </nav>
 
       <div className="bg-white py-8">
+        <div className="Pokemon-categories">
+          <h3>Pokemon categories</h3>
+          <PokemonCategory />
+        </div>
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {pokemonData.map((pokemon) => (
             <div key={pokemon.name} className="bg-red-100 p-4 rounded shadow">
