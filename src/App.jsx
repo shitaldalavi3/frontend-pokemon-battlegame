@@ -1,13 +1,23 @@
-import "./App.css";
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
+import Leaderboard from "./pages/LeaderBoard";
+import MyRoster from "./pages/MyRoster";
+import PokemonDetails from "./pages/PokemonDetail";
+import BattlePage from "./pages/BattlePage";
 
-function App() {
+const App = () => {
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Pokémon Cards</h1>
-      <HomePage />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/Myroster" element={<MyRoster />} />
+        <Route path="/pokemon/:name" element={<PokemonDetails />} />
+        <Route path="/battle" element={<BattlePage />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
