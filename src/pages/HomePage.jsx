@@ -7,11 +7,12 @@ const HomePage = () => {
   const [allPokemonData, setAllPokemonData] = useState([]);
   const [filteredPokemon, setFilteredPokemon] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchAllPokemonData = async () => {
       try {
-        const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=200");
+        const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=500");
         const data = await response.json();
         setAllPokemonData(data.results);
       } catch (error) {
@@ -64,11 +65,26 @@ const HomePage = () => {
     }
   };
 
+  const handleSearch = (event) => {
+    const term = event.target.value.toLowerCase();
+    setSearchTerm(term);
+
+    if (term === "") {
+      setFilteredPokemon(selectedCategories.length === 0 ? allPokemonData : filteredPokemon);
+    } else {
+      const filteredBySearch = allPokemonData.filter((pokemon) =>
+        pokemon.name.toLowerCase().includes(term)
+      );
+      setFilteredPokemon(filteredBySearch);
+    }
+  };
+
   const getPokemonImageUrl = (id) => {
     return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
   };
 
-  const pokemonToDisplay = selectedCategories.length === 0 ? allPokemonData : filteredPokemon;
+  const pokemonToDisplay =
+    searchTerm === "" && selectedCategories.length === 0 ? allPokemonData : filteredPokemon;
 
   return (
     <>
@@ -86,6 +102,19 @@ const HomePage = () => {
 
       <div className="bg-white py-2 gap-4">
         <PokemonCategory selectedCategories={selectedCategories} onCategoryClick={handleCategoryClick} />
+
+        {/* Search Bar */}
+        <div className="container mx-auto mt-4">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleSearch}
+            placeholder="Search Pokémon by name..."
+            className="w-full p-2 border rounded shadow"
+          />
+        </div>
+
+        {/* Pokémon Grid */}
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 py-4">
           {pokemonToDisplay.map((pokemon) => (
             <div key={pokemon.name} className="bg-red-100 p-4 rounded shadow">
