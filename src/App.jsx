@@ -6,7 +6,6 @@ import MyRoster from "./pages/MyRoster";
 import PokemonDetails from "./pages/PokemonDetail";
 import BattlePage from "./pages/BattlePage";
 
-
 const App = () => {
   return (
     <Router>
