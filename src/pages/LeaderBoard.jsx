@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 
 const Leaderboard = () => {
-  // State to store leaderboard data fetched from the API
   const [leaderboardData, setLeaderboardData] = useState([]);
 
-  // Fetch leaderboard data when the component mounts
   useEffect(() => {
     const fetchLeaderboardData = async () => {
       try {
         const response = await fetch("http://localhost:8080/leaderboard");
-        const data = await response.json();  // Parse the JSON response
-        setLeaderboardData(data);  // Update the state with the fetched data
+        const data = await response.json();
+        setLeaderboardData(data);
       } catch (error) {
-        console.error("Error fetching leaderboard data:", error);  // Handle errors
+        console.error("Error fetching leaderboard data:", error);
       }
     };
 
@@ -34,7 +32,10 @@ const Leaderboard = () => {
                     </span>
                     <span>Score: {player.score}</span>
                   </div>
-                  <div className="text-gray-500">{player.date}</div>
+                  <div className="text-gray-500">
+                    Battles: {player.battles}, Wins: {player.won}, Losses: {player.lost}
+                  </div>
+                  <div className="text-gray-500">{new Date(player.date).toLocaleDateString()}</div>
                 </li>
               ))
             ) : (
