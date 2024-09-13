@@ -1,76 +1,64 @@
 import React, { useState, useEffect } from "react";
 
 function BattlePage() {
-  // State to manage the player's selected Pokémon
   const [playerPokemon, setPlayerPokemon] = useState(null);
-  
-  // State to manage the enemy Pokémon (randomly selected)
   const [enemyPokemon, setEnemyPokemon] = useState(null);
-  
-  // State to display the result of the battle
   const [result, setResult] = useState("");
-  
-  // State to store the player's Pokémon roster (from local storage)
   const [roster, setRoster] = useState([]);
-  
-  // State to store detailed data for each Pokémon in the roster
   const [pokemonData, setPokemonData] = useState({});
-  
-  // State to handle the dropdown menu for Pokémon selection
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  // Fetch the roster from local storage and then fetch Pokémon data
   useEffect(() => {
     const storedRoster = JSON.parse(localStorage.getItem("roster")) || [];
     setRoster(storedRoster);
 
-    // Fetch detailed data for each Pokémon in the roster
     const fetchPokemonData = async () => {
       const pokemonDetails = {};
       for (const name of storedRoster) {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
         const data = await response.json();
-        pokemonDetails[name] = data; // Store data keyed by Pokémon name
+        pokemonDetails[name] = data;
       }
-      setPokemonData(pokemonDetails); // Save fetched data into state
+      setPokemonData(pokemonDetails);
     };
 
     fetchPokemonData();
   }, []);
 
-  // Function to get a random Pokémon from the API (for the enemy)
   const getRandomPokemon = async () => {
     const id = Math.floor(Math.random() * 898) + 1;
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
     return response.json();
   };
 
-  // Function to calculate the total base stats of a Pokémon
   const calculateTotalStats = (pokemon) => {
     if (!pokemon || !pokemon.stats) return 0;
-
     return pokemon.stats.reduce((total, stat) => total + stat.base_stat, 0);
   };
 
-  // Function to send battle result to the backend and update score
-  const updateScore = async (result) => {
+  const updateScore = async (battleResult) => {
     let scoreChange = 0;
-    if (result === "You win!") {
-      scoreChange = 10;  // Add 10 points for a win
-    } else if (result === "You lose!") {
-      scoreChange = -5;  // Subtract 5 points for a loss
-    } else if (result === "It's a tie!") {
-      scoreChange = 2;  // Add 2 points for a tie
+    let won = 0;
+    let lost = 0;
+
+    if (battleResult === "You win!") {
+      scoreChange = 10;
+      won = 1;
+    } else if (battleResult === "You lose!") {
+      scoreChange = -5;
+      lost = 1;
     }
 
-    const username = localStorage.getItem("username"); // Assuming username is stored in localStorage
+    const battles = 1;
+    const username = localStorage.getItem("username");
+
     try {
       const response = await fetch("http://localhost:8080/leaderboard", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, score: scoreChange }),
+        body: JSON.stringify({ username, score: scoreChange, battles, won, lost }),
       });
 
       if (!response.ok) {
@@ -84,7 +72,6 @@ function BattlePage() {
     }
   };
 
-  // Function to start the battle
   const startBattle = async () => {
     if (!playerPokemon) {
       alert("Please select a Pokémon to battle with.");
@@ -108,11 +95,9 @@ function BattlePage() {
 
     setResult(battleResult);
 
-    // Update the score based on the result
     await updateScore(battleResult);
   };
 
-  // Function to get the image URL for a Pokémon
   const getPokemonImageUrl = (pokemon) => {
     if (pokemonData[pokemon]) {
       return pokemonData[pokemon].sprites.front_default;
@@ -120,7 +105,6 @@ function BattlePage() {
     return "";
   };
 
-  // Function to handle Pokémon selection from the dropdown
   const handlePokemonSelect = (pokemon) => {
     setPlayerPokemon(pokemonData[pokemon]);
     setDropdownOpen(false);
@@ -181,9 +165,7 @@ function BattlePage() {
             <p><strong>Name:</strong> {playerPokemon.name}</p>
             <p><strong>Stats:</strong></p>
             {playerPokemon.stats.map((stat, index) => (
-              <p key={index}>
-                {stat.stat.name}: {stat.base_stat}
-              </p>
+              <p key={index}>{stat.stat.name}: {stat.base_stat}</p>
             ))}
           </div>
         )}
