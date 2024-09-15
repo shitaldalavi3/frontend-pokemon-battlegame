@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import PokemonCategory from "./PokemonCategory"; // Component for displaying Pokémon categories
-import axios from "axios"; // HTTP client for making API requests
-import PokemonDetailsModal from "./PokemonDetailsModal"; // Import modal component for Pokémon details
-import { Link, useNavigate } from "react-router-dom"; // React Router for navigation
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import PokemonCategory from "./PokemonCategory";
+import PokemonDetailsModal from "./PokemonDetailsModal";
 
-// Import card background images based on type
+// Import background images for different Pokémon types
 import normalbg from "../assets/card_bg/normal_bgpng.png";
 import fightingbg from "../assets/card_bg/fighting_bg.png";
 import flyingbg from "../assets/card_bg/flying_bg.png";
@@ -17,22 +17,28 @@ import steelbg from "../assets/card_bg/steel_bg.png";
 import firebg from "../assets/card_bg/fire_bg.png";
 import waterbg from "../assets/card_bg/water_bg.png";
 import grassbg from "../assets/card_bg/grass_bg.jpg";
-import electricbg from "../assets/card_bg/bug_bg.png";
+import electricbg from "../assets/card_bg/elctric_bg.png";
 import psychicbg from "../assets/card_bg/psychic_bg.jpg";
 import icebg from "../assets/card_bg/ice_bg.png";
 import dragonbg from "../assets/card_bg/dragon_bg.jpg";
 import darkbg from "../assets/card_bg/dark_bg.jpg";
 import fairybg from "../assets/card_bg/fairy_bg.png";
 
+// Import the logo for the navbar
+import logo from "../assets/image/Design 7.png";
+
+// Import background image for the entire page (if you're using an image as the background)
+import homepageBg from "../assets/image/background.jpeg"; // Make sure to replace this with your actual path
+
 const HomePage = () => {
-  const [pokemonData, setPokemonData] = useState([]);
-  const [allPokemonData, setAllPokemonData] = useState([]);
-  const [filteredPokemon, setFilteredPokemon] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedPokemon, setSelectedPokemon] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [username, setUsername] = useState("");
+  const [allPokemonData, setAllPokemonData] = useState([]); // Stores all fetched Pokémon data
+  const [displayLimit, setDisplayLimit] = useState(30); // Controls how many Pokémon are displayed at first
+  const [filteredPokemon, setFilteredPokemon] = useState([]); // Stores filtered Pokémon based on search or category
+  const [selectedCategories, setSelectedCategories] = useState([]); // Stores selected categories
+  const [searchTerm, setSearchTerm] = useState(""); // Stores the search input
+  const [selectedPokemon, setSelectedPokemon] = useState(null); // Pokémon selected to view in modal
+  const [isModalOpen, setIsModalOpen] = useState(false); // Controls whether modal is open or not
+  const [username, setUsername] = useState(""); // Stores username from localStorage
   const navigate = useNavigate();
 
   // Fetch detailed Pokémon data for each Pokémon
@@ -46,11 +52,10 @@ const HomePage = () => {
     }
   };
 
+  // Fetch all Pokémon data when the component mounts
   useEffect(() => {
-    // Check if username exists in localStorage
     const storedUsername = JSON.parse(localStorage.getItem("username"));
     if (!storedUsername) {
-      // If no username, navigate to signup page
       navigate("/signup");
     } else {
       setUsername(storedUsername);
@@ -63,8 +68,6 @@ const HomePage = () => {
         );
         const data = await response.json();
         setPokemonData(data.results);
-
-        // Fetch detailed data for each Pokémon
         const detailedPokemonData = await Promise.all(
           data.results.map(fetchPokemonDetails)
         );
@@ -77,6 +80,7 @@ const HomePage = () => {
     fetchAllPokemonData();
   }, [navigate]);
 
+  // Function to handle category click for filtering Pokémon by type
   const handleCategoryClick = async (category) => {
     if (category === "all") {
       setSelectedCategories([]);
@@ -119,6 +123,7 @@ const HomePage = () => {
     }
   };
 
+  // Handle search input
   const handleSearch = (event) => {
     const term = event.target.value.toLowerCase();
     setSearchTerm(term);
@@ -152,7 +157,6 @@ const HomePage = () => {
     setSelectedPokemon(null);
   };
 
-  // Background image mapping for types
   const bgImageMap = {
     normal: normalbg,
     fighting: fightingbg,
@@ -177,12 +181,12 @@ const HomePage = () => {
   // Get background style based on the first type of the Pokémon
   const getBackgroundStyle = (pokemon) => {
     if (!pokemon.types || pokemon.types.length === 0) {
-      return { backgroundColor: "#f0f0f0" }; // Default background if no type data available
+      return { backgroundColor: "#f0f0f0" }; // Default background if no type data is available
     }
 
     const firstType = pokemon.types[0]?.type?.name;
 
-    // Apply the background image for the first type only
+    // Return background image style for the first type
     return {
       backgroundImage: `url(${bgImageMap[firstType]})`,
       backgroundSize: "cover",
@@ -192,91 +196,115 @@ const HomePage = () => {
   };
 
   const getPokemonImageUrl = (pokemon) => {
-    return pokemon.sprites.other.dream_world.front_default;
+    return pokemon.sprites.other.dream_world.front_default; // Get Pokémon's dream world sprite
   };
 
-  const pokemonToDisplay =
-    searchTerm === "" && selectedCategories.length === 0
-      ? allPokemonData
-      : filteredPokemon;
+  // Function to handle "Load More" button click
+  const handleLoadMore = () => {
+    setDisplayLimit(displayLimit + 30); // Increase the display limit by 30
+  };
+
+  // Determine which Pokémon to display based on search term, selected categories, and display limit
+  const pokemonToDisplay = searchTerm === "" && selectedCategories.length === 0
+    ? allPokemonData.slice(0, displayLimit) // Show up to the current display limit
+    : filteredPokemon.slice(0, displayLimit); // Apply limit to filtered Pokémon
 
   return (
     <>
       {/* Navigation Bar */}
-      <nav className="bg-red-500 p-4 text-white shadow-md">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="text-2xl font-bold">Pokémon Battle</div>
-          <div className="space-x-4">
-            <Link
-              to="/"
-              className="hover:bg-red-400 px-3 py-2 rounded transition"
-            >
-              Home
-            </Link>
-            <Link
-              to="/myroster"
-              className="hover:bg-red-400 px-3 py-2 rounded transition"
-            >
-              My Roster
-            </Link>
-            <Link
-              to="/battle"
-              className="hover:bg-red-400 px-3 py-2 rounded transition"
-            >
-              Battle
-            </Link>
-            <Link
-              to="/leaderboard"
-              className="hover:bg-red-400 px-3 py-2 rounded transition"
-            >
-              Leaderboard
+      <div className="sticky top-0 z-10 bg-red-700 p-5 w-full" style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.9)" }}>
+        <div className="flex items-center justify-between">
+          <div className="w-auto self-start text-sm">
+            <Link to="/">
+              <span className="text-white">Exit </span>
+              <span className="font-semibold text-white">{username}</span>
             </Link>
           </div>
-        </div>
-      </nav>
 
-      {/* Main Content */}
-      <div className="bg-white py-2 gap-4">
-        <PokemonCategory
-          selectedCategories={selectedCategories}
-          onCategoryClick={handleCategoryClick}
-        />
+          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <Link to="/home">
+              <img src={logo} alt="Pokeball" className="w-[300px] h-auto" />
+            </Link>
+          </div>
 
-        {/* Search Bar */}
-        <div className="container mx-auto mt-4">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={handleSearch}
-            placeholder="Search Pokémon by name..."
-            className="w-full p-2 border rounded shadow"
-          />
-        </div>
-
-        {/* Pokémon Grid */}
-        <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 py-4">
-          {pokemonToDisplay.map((pokemon) => (
-            <div
-              key={pokemon.name}
-              className="p-4 rounded shadow pokemon-card"
-              style={getBackgroundStyle(pokemon)} // Set background image based on first type
-              onClick={() => handleCardClick(pokemon)}
-            >
-              <h2 className="text-xl font-semibold text-white capitalize">
-                {pokemon.name}
-              </h2>
-              <img
-                src={getPokemonImageUrl(pokemon)}
-                alt={`${pokemon.name} sprite`}
-                className="w-full h-40 object-contain mx-auto"
-              />
-              <div className="mt-3 space-x-3">
-                <button className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-400 transition">
-                  Play
-                </button>
-              </div>
+          <div className="w-auto text-white text-right">
+            <div>
+              Hello, Player <span className="font-bold text-white">{username}</span>
             </div>
-          ))}
+            <div className="mt-2">
+              <Link
+                to="/leaderboard"
+                className="bg-black text-white p-2 pl-5 pr-5 rounded-full inline-block transition animate-fire"
+              >
+                Score
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content with Background */}
+      <div
+        className="bg-cover bg-black bg-center bg-no-repeat min-h-screen"
+        //style={{
+          //backgroundImage: `url(${homepageBg})`, // Use background image for the entire page
+       // }}
+      >
+        <div className=" py-2 flex gap-2 max-w-full mx-auto px-2">
+          {/* Sidebar for categories */}
+          <div className="w-1/6">
+            <div className="flex flex-wrap gap-2 mt-4">
+              <PokemonCategory selectedCategories={selectedCategories} onCategoryClick={handleCategoryClick} />
+            </div>
+          </div>
+
+          {/* Pokémon grid */}
+          <div className="w-5/6">
+            <div className="mx-auto">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={handleSearch}
+                placeholder="Search Pokémon by name..."
+                className="w-full p-2 border rounded shadow mb-4"
+              />
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 py-4">
+                {pokemonToDisplay.map((pokemon) => (
+                  <div
+                    key={pokemon.name}
+                    className="p-4 rounded shadow pokemon-card"
+                    style={getBackgroundStyle(pokemon)}
+                    onClick={() => handleCardClick(pokemon)}
+                  >
+                    <h2 className="text-xl font-semibold text-white capitalize">{pokemon.name}</h2>
+                    <img
+                      src={getPokemonImageUrl(pokemon)}
+                      alt={`${pokemon.name} sprite`}
+                      className="w-full h-40 object-contain mx-auto"
+                    />
+                    <div className="mt-3 space-x-3">
+                      <button className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-400 transition">
+                        Play
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Load More Button */}
+              {displayLimit < allPokemonData.length && (
+                <div className="text-center mt-6">
+                  <button
+                    onClick={handleLoadMore}
+                    className="bg-red-700 text-white px-6 py-2 rounded-full shadow hover:bg-white hover:text-black transition"
+                  >
+                    Load More
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
       {isModalOpen && (
