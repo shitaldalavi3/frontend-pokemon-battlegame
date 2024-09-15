@@ -1,9 +1,29 @@
 import React, { useRef, useEffect, useState } from "react";
-import fightingImage from '../assets/image/Fighting Type.webp';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import pokeball from '../assets/image/pokeball.png';
+
+
+//import background image in card 
+import normalImage from '../assets/image/normal type.webp';
 import fireImage from '../assets/image/Fire Type.webp';
+import flyingImage from '../assets/image/Flying Type.webp';
+import poisonImage from '../assets/image/Poison Type.webp';
+import groundImage from '../assets/image/Ground Type.webp';
+import rockImage from '../assets/image/Rock Type.webp';
+import bugImage from '../assets/image/Bug Type.webp';
+import ghostImage from '../assets/image/Ghost Type.webp';
+import steelImage from '../assets/image/Steel Type.webp';
+import fightingImage from '../assets/image/Fighting Type.webp';
+import waterImage from '../assets/image/Water Type.webp';
+import grassImage from '../assets/image/grass type.webp';
+import electricImage from '../assets/image/Electric Type.webp';
+import psychicImage from '../assets/image/Psychic Type.webp';
+import iceImage from '../assets/image/Ice Type.webp';
+import dragonImage from '../assets/image/Dragon Type.webp';
+import darkImage from '../assets/image/Dark Type.webp';
+import  fairyImage from '../assets/image/Fairy Type.webp';
+
 
 // import icone to card 
 import normal from '../assets/icons/normal.png';
@@ -46,46 +66,46 @@ const statNameMap = {
 
 // Mapping for background images based on type
 const bgImageMap = {
-  normal: normal,
+  normal: normalImage,
   fighting: fightingImage,
-  flying: '/images/flying-bg.png',
-  poison: '/images/poison-bg.png',
-  ground: '/images/ground-bg.png',
-  rock: '/images/rock-bg.png',
-  bug: '/images/bug-bg.png',
-  ghost: '/images/ghost-bg.png',
-  steel: '/images/steel-bg.png',
+  flying: flyingImage,
+  poison: poisonImage,
+  ground: groundImage,
+  rock: rockImage,
+  bug: bugImage,
+  ghost: ghostImage,
+  steel: steelImage,
   fire: fireImage,
-  water: '/images/water-bg.png',
-  grass: '/images/grass-bg.png',
-  electric: '/images/electric-bg.png',
-  psychic: '/images/psychic-bg.png',
-  ice: '/images/ice-bg.png',
-  dragon: '/images/dragon-bg.png',
-  dark: '/images/dark-bg.png',
-  fairy: '/images/fairy-bg.png',
+  water: waterImage,
+  grass: grassImage,
+  electric: electricImage,
+  psychic: psychicImage,
+  ice: iceImage,
+  dragon: dragonImage,
+  dark: darkImage,
+  fairy: fairyImage,
 };
 
 // **Define typeColorMap to map each type to a color**
 const typeColorMap = {
-  normal: "#A8A77A",
+  normal: "#949478",
   fighting: "#2F1409",
   flying: "#A98FF3",
-  poison: "#A33EA1",
-  ground: "#E2BF65",
-  rock: "#B6A136",
-  bug: "#A6B91A",
-  ghost: "#735797",
-  steel: "#B7B7CE",
+  poison: "#2C403F",
+  ground: "#A16A43",
+  rock: "#5A524A",
+  bug: "#183A38",
+  ghost: "#240826",
+  steel: "#719AA7",
   fire: "#2B0111",
-  water: "#6390F0",
-  grass: "#7AC74C",
-  electric: "#F7D02C",
-  psychic: "#F95587",
-  ice: "#96D9D6",
-  dragon: "#6F35FC",
-  dark: "#705746",
-  fairy: "#D685AD",
+  water: "#1D2635",
+  grass: "#0D553F",
+  electric: "#202D37",
+  psychic: "#391538",
+  ice: "#3F7398",
+  dragon: "#120714",
+  dark: "#1C040C",
+  fairy: "#D096A1",
 };
 
 // Type icon map for each Pokémon type

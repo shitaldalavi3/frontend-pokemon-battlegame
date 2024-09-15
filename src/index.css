@@ -2,6 +2,3 @@
 @tailwind components;
 @tailwind utilities;
 
-.layout {
-  @apply max-w-[48rem] mx-auto;
-}
