@@ -67,7 +67,10 @@ const HomePage = () => {
           "https://pokeapi.co/api/v2/pokemon?limit=500"
         );
         const data = await response.json();
-        setPokemonData(data.results);
+        
+        // Fix: Use setAllPokemonData instead of setPokemonData
+        setAllPokemonData(data.results);
+
         const detailedPokemonData = await Promise.all(
           data.results.map(fetchPokemonDetails)
         );
@@ -196,8 +199,10 @@ const HomePage = () => {
   };
 
   const getPokemonImageUrl = (pokemon) => {
-    return pokemon.sprites.other.dream_world.front_default; // Get Pokémon's dream world sprite
+    // Fallback in case dream_world sprite is not available
+    return pokemon?.sprites?.other?.dream_world?.front_default || "path/to/placeholder.png"; 
   };
+  
 
   // Function to handle "Load More" button click
   const handleLoadMore = () => {
@@ -246,9 +251,6 @@ const HomePage = () => {
       {/* Main Content with Background */}
       <div
         className="bg-cover bg-black bg-center bg-no-repeat min-h-screen"
-        //style={{
-          //backgroundImage: `url(${homepageBg})`, // Use background image for the entire page
-       // }}
       >
         <div className=" py-2 flex gap-2 max-w-full mx-auto px-2">
           {/* Sidebar for categories */}
