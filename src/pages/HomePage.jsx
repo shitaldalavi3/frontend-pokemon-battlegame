@@ -4,6 +4,26 @@ import axios from "axios"; // HTTP client for making API requests
 import PokemonDetailsModal from "./PokemonDetailsModal"; // Import modal component for Pokémon details
 import { Link, useNavigate } from "react-router-dom"; // React Router for navigation
 
+// Import card background images based on type
+import normalbg from "../assets/card_bg/normal_bgpng.png";
+import fightingbg from "../assets/card_bg/fighting_bg.png";
+import flyingbg from "../assets/card_bg/flying_bg.png";
+import poisonbg from "../assets/card_bg/poison_bg.png";
+import groundbg from "../assets/card_bg/ground_bg.jpg";
+import rockbg from "../assets/card_bg/rock_bg.png";
+import bugbg from "../assets/card_bg/bug_bg.png";
+import ghostbg from "../assets/card_bg/ghost_bg.png";
+import steelbg from "../assets/card_bg/steel_bg.png";
+import firebg from "../assets/card_bg/fire_bg.png";
+import waterbg from "../assets/card_bg/water_bg.png";
+import grassbg from "../assets/card_bg/grass_bg.jpg";
+import electricbg from "../assets/card_bg/bug_bg.png";
+import psychicbg from "../assets/card_bg/psychic_bg.jpg";
+import icebg from "../assets/card_bg/ice_bg.png";
+import dragonbg from "../assets/card_bg/dragon_bg.jpg";
+import darkbg from "../assets/card_bg/dark_bg.jpg";
+import fairybg from "../assets/card_bg/fairy_bg.png";
+
 const HomePage = () => {
   const [allPokemonData, setAllPokemonData] = useState([]);
   const [filteredPokemon, setFilteredPokemon] = useState([]);
@@ -122,41 +142,43 @@ const HomePage = () => {
     setSelectedPokemon(null);
   };
 
-  // Background color mapping for types
-  const bgColorMap = {
-    normal: "#A8A77A",
-    fighting: "#C22E28",
-    flying: "#A98FF3",
-    poison: "#A33EA1",
-    ground: "#E2BF65",
-    rock: "#B6A136",
-    bug: "#A6B91A",
-    ghost: "#735797",
-    steel: "#B7B7CE",
-    fire: "#EE8130",
-    water: "#6390F0",
-    grass: "#7AC74C",
-    electric: "#F7D02C",
-    psychic: "#F95587",
-    ice: "#96D9D6",
-    dragon: "#6F35FC",
-    dark: "#705746",
-    fairy: "#D685AD",
+  // Background image mapping for types
+  const bgImageMap = {
+    normal: normalbg,
+    fighting: fightingbg,
+    flying: flyingbg,
+    poison: poisonbg,
+    ground: groundbg,
+    rock: rockbg,
+    bug: bugbg,
+    ghost: ghostbg,
+    steel: steelbg,
+    fire: firebg,
+    water: waterbg,
+    grass: grassbg,
+    electric: electricbg,
+    psychic: psychicbg,
+    ice: icebg,
+    dragon: dragonbg,
+    dark: darkbg,
+    fairy: fairybg,
   };
 
+  // Get background style based on the first type of the Pokémon
   const getBackgroundStyle = (pokemon) => {
     if (!pokemon.types || pokemon.types.length === 0) {
       return { backgroundColor: "#f0f0f0" }; // Default background if no type data available
     }
 
     const firstType = pokemon.types[0]?.type?.name;
-    const secondType = pokemon.types[1]?.type?.name;
 
-    return secondType
-      ? {
-          background: `linear-gradient(to right, ${bgColorMap[firstType]} 50%, ${bgColorMap[secondType]} 50%)`,
-        }
-      : { backgroundColor: bgColorMap[firstType] };
+    // Apply the background image for the first type only
+    return {
+      backgroundImage: `url(${bgImageMap[firstType]})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    };
   };
 
   const getPokemonImageUrl = (pokemon) => {
@@ -209,8 +231,8 @@ const HomePage = () => {
           {pokemonToDisplay.map((pokemon) => (
             <div
               key={pokemon.name}
-              className="p-4 rounded shadow"
-              style={getBackgroundStyle(pokemon)} // Set background color based on types
+              className="p-4 rounded shadow pokemon-card"
+              style={getBackgroundStyle(pokemon)} // Set background image based on first type
               onClick={() => handleCardClick(pokemon)}
             >
               <h2 className="text-xl font-semibold text-white capitalize">{pokemon.name}</h2>
