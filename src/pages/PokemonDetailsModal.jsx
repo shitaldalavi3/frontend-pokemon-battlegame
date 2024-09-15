@@ -3,8 +3,28 @@ import fightingImage from '../assets/image/Fighting Type.webp';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import pokeball from '../assets/image/pokeball.png';
-import fighting from '../assets/image/fighting_logo_transparent.png';
 import fireImage from '../assets/image/Fire Type.webp';
+
+// import icone to card 
+import normal from '../assets/icons/normal.png';
+import fighting from '../assets/icons/fighting.png';
+import flying from '../assets/icons/flying.png';
+import poison from '../assets/icons/poison.png';
+import ground from '../assets/icons/ground.png';
+import rock from '../assets/icons/rock.png';
+import bug from '../assets/icons/bug.png';
+import ghost from '../assets/icons/ghost.png';
+import steel from '../assets/icons/steel.png';
+import fire from '../assets/icons/fire.png';
+import water from '../assets/icons/water.jpg';
+import grass from '../assets/icons/grass.png';
+import electric from '../assets/icons/electric.png';
+import psychic from '../assets/icons/Psychic.png';
+import ice from '../assets/icons/ice.png';
+import dragon from '../assets/icons/dragon.png';
+import dark from '../assets/icons/dark.png';
+import fairy from '../assets/icons/fairy.png';
+
 
 // Helper function to convert hex color to rgba with opacity
 const hexToRgba = (hex, opacity) => {
@@ -26,7 +46,7 @@ const statNameMap = {
 
 // Mapping for background images based on type
 const bgImageMap = {
-  normal: '/images/normal-bg.png',
+  normal: normal,
   fighting: fightingImage,
   flying: '/images/flying-bg.png',
   poison: '/images/poison-bg.png',
@@ -70,24 +90,24 @@ const typeColorMap = {
 
 // Type icon map for each Pokémon type
 const typeIconMap = {
-  normal: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/normal.svg",
+  normal: normal,
   fighting: fighting,
-  flying: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/flying.svg",
-  poison: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/poison.svg",
-  ground: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/ground.svg",
-  rock: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/rock.svg",
-  bug: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/bug.svg",
-  ghost: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/ghost.svg",
-  steel: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/steel.svg",
-  fire: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/fire.svg",
-  water: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/water.svg",
-  grass: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/grass.svg",
-  electric: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/electric.svg",
-  psychic: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/psychic.svg",
-  ice: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/ice.svg",
-  dragon: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/dragon.svg",
-  dark: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/dark.svg",
-  fairy: "https://raw.githubusercontent.com/duiker101/pokemon-type-svg-icons/master/icons/fairy.svg",
+  flying: flying,
+  poison: poison,
+  ground: ground,
+  rock: rock,
+  bug: bug,
+  ghost: ghost,
+  steel: steel,
+  fire: fire,
+  water: water,
+  grass: grass,
+  electric: electric,
+  psychic: psychic,
+  ice: ice,
+  dragon: dragon,
+  dark: dark,
+  fairy: fairy,
 };
 
 const PokemonDetailsModal = ({ pokemon, onClose }) => {
@@ -160,8 +180,8 @@ const PokemonDetailsModal = ({ pokemon, onClose }) => {
         position: 'absolute',
         bottom: -1,
         right: 0,
-        width: '40px', 
-        height: '40px', 
+        width: '45px', 
+        height: '45px', 
         backgroundColor: 'white',
         clipPath: 'polygon(100% 0, 100% 100%, 0 100%)', 
       }}
@@ -172,10 +192,10 @@ const PokemonDetailsModal = ({ pokemon, onClose }) => {
         alt={firstType}
         style={{
           position: 'absolute',
-          top: '15px', 
-          left: '15px', 
-          width: '25px', 
-          height: '25px', 
+          top: '20px', 
+          left: '20px', 
+          width: '23px', 
+          height: '23px', 
         }}
           />
     </div>  
