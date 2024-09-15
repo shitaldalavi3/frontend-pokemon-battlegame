@@ -1,14 +1,24 @@
-import React, { useState, useEffect } from "react";
+// src/pages/BattlePage.jsx
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function BattlePage() {
+const BattlePage = () => {
   const [playerPokemon, setPlayerPokemon] = useState(null);
   const [enemyPokemon, setEnemyPokemon] = useState(null);
   const [result, setResult] = useState("");
   const [roster, setRoster] = useState([]);
   const [pokemonData, setPokemonData] = useState({});
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    // Check if username exists, otherwise redirect to signup
+    const username = localStorage.getItem("username");
+    if (!username) {
+      navigate("/signup");
+      return;
+    }
+
     const storedRoster = JSON.parse(localStorage.getItem("roster")) || [];
     setRoster(storedRoster);
 
@@ -23,7 +33,7 @@ function BattlePage() {
     };
 
     fetchPokemonData();
-  }, []);
+  }, [navigate]);
 
   const getRandomPokemon = async () => {
     const id = Math.floor(Math.random() * 898) + 1;
@@ -50,7 +60,7 @@ function BattlePage() {
     }
 
     const battles = 1;
-    const username = localStorage.getItem("username");
+    const username = JSON.parse(localStorage.getItem("username"));
 
     try {
       const response = await fetch("http://localhost:8080/leaderboard", {
@@ -217,6 +227,6 @@ function BattlePage() {
       {enemyPokemon && <div className="mt-4 text-lg font-bold text-center">{result}</div>}
     </div>
   );
-}
+};
 
 export default BattlePage;
