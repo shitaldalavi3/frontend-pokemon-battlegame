@@ -25,6 +25,7 @@ import darkbg from "../assets/card_bg/dark_bg.jpg";
 import fairybg from "../assets/card_bg/fairy_bg.png";
 
 const HomePage = () => {
+  const [pokemonData, setPokemonData] = useState([]);
   const [allPokemonData, setAllPokemonData] = useState([]);
   const [filteredPokemon, setFilteredPokemon] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -57,11 +58,16 @@ const HomePage = () => {
 
     const fetchAllPokemonData = async () => {
       try {
-        const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=500");
+        const response = await fetch(
+          "https://pokeapi.co/api/v2/pokemon?limit=500"
+        );
         const data = await response.json();
+        setPokemonData(data.results);
 
         // Fetch detailed data for each Pokémon
-        const detailedPokemonData = await Promise.all(data.results.map(fetchPokemonDetails));
+        const detailedPokemonData = await Promise.all(
+          data.results.map(fetchPokemonDetails)
+        );
         setAllPokemonData(detailedPokemonData.filter(Boolean)); // Filter out any failed requests
       } catch (error) {
         console.error("Error fetching Pokémon data:", error);
@@ -95,12 +101,12 @@ const HomePage = () => {
       );
       const responses = await Promise.all(promises);
 
-      const categoryPokemonSets = responses.map((response) =>
-        new Set(response.data.pokemon.map((p) => p.pokemon.name))
+      const categoryPokemonSets = responses.map(
+        (response) => new Set(response.data.pokemon.map((p) => p.pokemon.name))
       );
 
-      const intersection = categoryPokemonSets.reduce((acc, curr) =>
-        new Set([...acc].filter((x) => curr.has(x)))
+      const intersection = categoryPokemonSets.reduce(
+        (acc, curr) => new Set([...acc].filter((x) => curr.has(x)))
       );
 
       const filtered = allPokemonData.filter((pokemon) =>
@@ -118,7 +124,9 @@ const HomePage = () => {
     setSearchTerm(term);
 
     if (term === "") {
-      setFilteredPokemon(selectedCategories.length === 0 ? allPokemonData : filteredPokemon);
+      setFilteredPokemon(
+        selectedCategories.length === 0 ? allPokemonData : filteredPokemon
+      );
     } else {
       const filteredBySearch = allPokemonData.filter((pokemon) =>
         pokemon.name.toLowerCase().includes(term)
@@ -129,7 +137,9 @@ const HomePage = () => {
 
   const handleCardClick = async (pokemon) => {
     try {
-      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`);
+      const response = await axios.get(
+        `https://pokeapi.co/api/v2/pokemon/${pokemon.name}`
+      );
       setSelectedPokemon(response.data);
       setIsModalOpen(true);
     } catch (error) {
@@ -175,9 +185,9 @@ const HomePage = () => {
     // Apply the background image for the first type only
     return {
       backgroundImage: `url(${bgImageMap[firstType]})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
     };
   };
 
@@ -186,7 +196,9 @@ const HomePage = () => {
   };
 
   const pokemonToDisplay =
-    searchTerm === "" && selectedCategories.length === 0 ? allPokemonData : filteredPokemon;
+    searchTerm === "" && selectedCategories.length === 0
+      ? allPokemonData
+      : filteredPokemon;
 
   return (
     <>
@@ -195,16 +207,28 @@ const HomePage = () => {
         <div className="container mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold">Pokémon Battle</div>
           <div className="space-x-4">
-            <Link to="/" className="hover:bg-red-400 px-3 py-2 rounded transition">
+            <Link
+              to="/"
+              className="hover:bg-red-400 px-3 py-2 rounded transition"
+            >
               Home
             </Link>
-            <Link to="/myroster" className="hover:bg-red-400 px-3 py-2 rounded transition">
+            <Link
+              to="/myroster"
+              className="hover:bg-red-400 px-3 py-2 rounded transition"
+            >
               My Roster
             </Link>
-            <Link to="/battle" className="hover:bg-red-400 px-3 py-2 rounded transition">
+            <Link
+              to="/battle"
+              className="hover:bg-red-400 px-3 py-2 rounded transition"
+            >
               Battle
             </Link>
-            <Link to="/leaderboard" className="hover:bg-red-400 px-3 py-2 rounded transition">
+            <Link
+              to="/leaderboard"
+              className="hover:bg-red-400 px-3 py-2 rounded transition"
+            >
               Leaderboard
             </Link>
           </div>
@@ -213,7 +237,10 @@ const HomePage = () => {
 
       {/* Main Content */}
       <div className="bg-white py-2 gap-4">
-        <PokemonCategory selectedCategories={selectedCategories} onCategoryClick={handleCategoryClick} />
+        <PokemonCategory
+          selectedCategories={selectedCategories}
+          onCategoryClick={handleCategoryClick}
+        />
 
         {/* Search Bar */}
         <div className="container mx-auto mt-4">
@@ -235,7 +262,9 @@ const HomePage = () => {
               style={getBackgroundStyle(pokemon)} // Set background image based on first type
               onClick={() => handleCardClick(pokemon)}
             >
-              <h2 className="text-xl font-semibold text-white capitalize">{pokemon.name}</h2>
+              <h2 className="text-xl font-semibold text-white capitalize">
+                {pokemon.name}
+              </h2>
               <img
                 src={getPokemonImageUrl(pokemon)}
                 alt={`${pokemon.name} sprite`}
@@ -250,8 +279,9 @@ const HomePage = () => {
           ))}
         </div>
       </div>
-
-      {isModalOpen && <PokemonDetailsModal pokemon={selectedPokemon} onClose={closeModal} />}
+      {isModalOpen && (
+        <PokemonDetailsModal pokemon={selectedPokemon} onClose={closeModal} />
+      )}
     </>
   );
 };
