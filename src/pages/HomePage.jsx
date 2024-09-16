@@ -269,20 +269,8 @@ const HomePage = () => {
                 My Roster
               </Link>
               <Link
-                to="/battle"
-                className=" text-black font-semibold p-2 pl-5 pr-5   hover:text-yellow-500 hover: transition animate-fire"
-              >
-                BattlePage
-              </Link>
-              <Link
                 to="/leaderboard"
-                className=" text-black font-semibold p-2 pl-5 pr-5   hover:text-yellow-500 hover: transition animate-fire"
-              >
-                LeaderBoard
-              </Link>
-              <Link
-                to="/leaderboard"
-                className=" text-black font-semibold p-2 pl-5 pr-5   hover:text-yellow-500 transition animate-fire"
+                className=" bg-black text-white p-2 pl-5 pr-5  rounded-full inline-block transition animate-fire"
               >
                 Score
               </Link>
