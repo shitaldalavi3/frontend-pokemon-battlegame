@@ -20,7 +20,7 @@ const Leaderboard = () => {
   return (
     <div className="bg-black min-h-screen text-white p-3">
       <div className="container mx-auto py-8 p-3 ">
-        <h1 className="text-3xl font-bold mb-4 p-3 ">Leaderboard</h1>
+        <h1 className="text-3xl font-bold mb-4 p-3 text-center">Leaderboard</h1>
         <div className=" bg-red-700 rounded shadow p-3">
           <ul>
             {leaderboardData.length > 0 ? (
