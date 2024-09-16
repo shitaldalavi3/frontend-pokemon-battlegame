@@ -30,7 +30,7 @@ import fairybg from "../assets/card_bg/fairy_bg.png";
 import logo from "../assets/image/Design 7.png";
 
 // Import background image for the entire page (if you're using an image as the background)
-import homepageBg from "../assets/image/background.jpeg"; // Make sure to replace this with your actual path
+import homepageBg from "../assets/image/bg 2.jpeg"; 
 
 const HomePage = () => {
   const [allPokemonData, setAllPokemonData] = useState([]); // Stores all fetched Pokémon data
@@ -280,83 +280,113 @@ const HomePage = () => {
       </div>
 
       {/* Main Content with Background */}
-      <div className="bg-cover bg-black bg-center bg-no-repeat min-h-screen">
-        <div className=" py-2 flex gap-2 max-w-full mx-auto px-2">
-          {/* Sidebar for categories */}
-          <div className="w-1/6">
-            {/* Move the search bar above categories */}
-            <div className="mx-auto mb-4 mt-32 ml-10">
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={handleSearch}
-                placeholder="Search Pokémon by name..."
-                className="w-72 max-w-md p-3 mr-8 border-2 border-black rounded-2xl bg-red-500 bg-opacity-50 text-white mb-4"
-              />
-            </div>
+      <div className="min-h-screen flex"
+        style={{
+        backgroundImage: `url(${homepageBg})`,  // Use the background image
+        backgroundSize: "cover",               // Ensure the background covers the whole area
+        backgroundPosition: "center",          // Center the background
+        backgroundRepeat: "no-repeat",         // No repeating of the background image
+        backgroundAttachment: "fixed",         // This ensures the background is fixed when scrolling
+        }}
+>
+  {/* Sidebar for categories */}
+  <div className="w-1/6 sticky top-0">
+    <div className="mx-auto mb-4 mt-32 ml-10">
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={handleSearch}
+        placeholder="Search Pokémon by name..."
+        className="w-72 max-w-md p-3 mr-8 border-2 border-black rounded-2xl bg-red-500 bg-opacity-50 text-white mb-4"
+      />
+    </div>
 
-            <div className="flex flex-wrap gap-2">
-              <PokemonCategory
-                selectedCategories={selectedCategories}
-                onCategoryClick={handleCategoryClick}
-              />
-            </div>
-          </div>
+    <div className="flex flex-wrap gap-2">
+      <PokemonCategory
+        selectedCategories={selectedCategories}
+        onCategoryClick={handleCategoryClick}
+      />
+    </div>
+  </div>
 
-          {/* Pokémon grid */}
-          <div className="w-5/6 mt-28">
-          <h2 className="text-3xl font-semibold text-white capitalize mt-3 mb-3">
-                   All Pokemon
-                  </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 py-4">
-              {pokemonToDisplay.map((pokemon) => (
-                <div
-                  key={pokemon.name}
-                  className="p-4 rounded shadow pokemon-card"
-                  style={getBackgroundStyle(pokemon)}
-                  onClick={() => handleCardClick(pokemon)} // Added onClick to the card
-                >
-                  <h2 className="text-xl font-semibold text-white capitalize">
-                    {pokemon.name}
-                  </h2>
-                  <img
-                    src={getPokemonImageUrl(pokemon)}
-                    alt={`${pokemon.name} sprite`}
-                    className="w-full h-40 object-contain mx-auto"
-                  />
-                  <div className="mt-5 flex justify-end space-x-3">
-                    <button className="bg-red-500  bg-opacity-70 text-white px-3 py-2 rounded-xl shadow hover:bg-red-700 transition">
-                      Play
-                    </button>
-                    <button
-                      onClick={() => addPokemonToRoster(pokemon.name)}
-                      className={`${
-                        roster.includes(pokemon.name)
-                          ? "bg-gray-500"
-                          : "bg-red-500 hover:bg-red-700"
-                      } text-white px-3 py-2 rounded-xl shadow transition`}
-                    >
-                      {roster.includes(pokemon.name) ? "Added to Roster" : "Add to Roster"}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+  {/* Pokémon grid with scrollable content */}
+  <div className="w-5/6 mt-28 overflow-y-auto h-[80vh] p-5">
+    <h2 className="text-3xl font-semibold text-white capitalize mt-3 mb-3">
+      All Pokemon
+    </h2>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 py-4">
+  {pokemonToDisplay.map((pokemon) => (
+    <div
+      key={pokemon.name}                       
+      className="p-4 rounded shadow pokemon-card"
+      style={getBackgroundStyle(pokemon)}      
+      onClick={() => handleCardClick(pokemon)} 
+    >
+      {/* Pokémon Name */}
+      <h2 className="text-xl font-semibold text-white capitalize">
+        {pokemon.name}
+      </h2>
 
-            {/* Load More Button */}
-            {displayLimit < allPokemonData.length && (
-              <div className="text-center mt-6">
-                <button
-                  onClick={handleLoadMore}
-                  className="bg-red-700 text-white px-6 py-2 rounded-full shadow hover:bg-white hover:text-black transition"
-                >
-                  Load More
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
+            {/* Pokémon Types */}
+            <div className="flex justify-start mt-3">
+        {pokemon.types && pokemon.types.length > 0 ? (
+          pokemon.types.map((typeInfo) => (
+            <span
+              key={typeInfo.type.name}           
+              className="bg-white bg-opacity-40 text-black px-2 py-1 rounded-xl mx-1 text-sm"
+            >
+              {typeInfo.type.name}
+            </span>
+          ))
+        ) : (
+          <span className="text-gray-400">No types available</span>
+        )}
       </div>
+
+      {/* Pokémon Image */}
+      <img
+        src={getPokemonImageUrl(pokemon)}
+        alt={`${pokemon.name} sprite`}
+        className="w-full h-40 object-contain mx-auto"
+      />
+
+
+
+      {/* Buttons */}
+      <div className="mt-5 flex justify-end space-x-3">
+        <button className="bg-red-500 bg-opacity-70 text-white px-3 py-2 rounded-xl shadow hover:bg-red-700 transition">
+          Play
+        </button>
+        <button
+          onClick={() => addPokemonToRoster(pokemon.name)} // Correctly wrap function in {}
+          className={`${
+            roster.includes(pokemon.name)
+              ? "bg-gray-500"
+              : "bg-red-500 hover:bg-red-700"
+          } text-white px-3 py-2 rounded-xl shadow transition`}
+        >
+          {roster.includes(pokemon.name) ? "Added to Roster" : "Add to Roster"}
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
+
+
+    {/* Load More Button */}
+    {displayLimit < allPokemonData.length && (
+      <div className="text-center mt-6">
+        <button
+          onClick={handleLoadMore}
+          className="bg-red-700 text-white px-6 py-2 rounded-full shadow hover:bg-white hover:text-black transition"
+        >
+          Load More
+        </button>
+      </div>
+    )}
+  </div>
+</div>
+
       {isModalOpen && (
         <PokemonDetailsModal pokemon={selectedPokemon} onClose={closeModal} />
       )}
