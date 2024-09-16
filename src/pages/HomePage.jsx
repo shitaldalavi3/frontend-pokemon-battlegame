@@ -250,20 +250,20 @@ const HomePage = () => {
           </div>
 
           <div className="w-auto text-white text-right">
-            <div>
+            <div className="mr-3 ">
               Hello, Player{" "}
               <span className="font-bold text-white">{username}</span>
             </div>
             <div className="mt-2">
               <Link
                 to="/myroster"
-                className="bg-black text-white p-2 pl-5 pr-5 rounded-full inline-block transition animate-fire"
+                className=" text-white p-2 pl-5 pr-5   hover:text-yellow-500 hover: transition animate-fire"
               >
                 My Roster
               </Link>
               <Link
                 to="/leaderboard"
-                className="bg-black text-white p-2 pl-5 pr-5 rounded-full inline-block transition animate-fire"
+                className=" text-white p-2 pl-5 pr-5   hover:text-yellow-500 transition animate-fire"
               >
                 Score
               </Link>
