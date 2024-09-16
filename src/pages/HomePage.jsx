@@ -229,6 +229,10 @@ const HomePage = () => {
     setDisplayLimit(displayLimit + 30); // Increase the display limit by 30
   };
 
+  const handlePlayClick = () => {
+    navigate("/battle");
+  };
+
   // Determine which Pokémon to display based on search term, selected categories, and display limit
   const pokemonToDisplay =
     searchTerm === "" && selectedCategories.length === 0
@@ -252,14 +256,17 @@ const HomePage = () => {
 
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <Link to="/home">
-              <img src={logo} alt="Pokemon dul arena " className="w-[300px] h-auto" />
+              <img
+                src={logo}
+                alt="Pokemon dul arena "
+                className="w-[300px] h-auto"
+              />
             </Link>
           </div>
 
           <div className="w-auto text-white text-right">
             <div>
-              Hello,{" "}
-              <span className="font-bold text-white">{username}</span>
+              Hello, <span className="font-bold text-white">{username}</span>
             </div>
             <div className="mt-2 flex space-x-4 ">
               <Link
@@ -305,9 +312,9 @@ const HomePage = () => {
 
           {/* Pokémon grid */}
           <div className="w-5/6 mt-28">
-          <h2 className="text-3xl font-semibold text-white capitalize mt-3 mb-3">
-                   All Pokemon
-                  </h2>
+            <h2 className="text-3xl font-semibold text-white capitalize mt-3 mb-3">
+              All Pokemon
+            </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 py-4">
               {pokemonToDisplay.map((pokemon) => (
                 <div
@@ -325,7 +332,10 @@ const HomePage = () => {
                     className="w-full h-40 object-contain mx-auto"
                   />
                   <div className="mt-5 flex justify-end space-x-3">
-                    <button className="bg-red-500  bg-opacity-70 text-white px-3 py-2 rounded-xl shadow hover:bg-red-700 transition">
+                    <button
+                      onClick={handlePlayClick}
+                      className="bg-red-500  bg-opacity-70 text-white px-3 py-2 rounded-xl shadow hover:bg-red-700 transition"
+                    >
                       Play
                     </button>
                     <button
@@ -336,7 +346,9 @@ const HomePage = () => {
                           : "bg-red-500 hover:bg-red-700"
                       } text-white px-3 py-2 rounded-xl shadow transition`}
                     >
-                      {roster.includes(pokemon.name) ? "Added to Roster" : "Add to Roster"}
+                      {roster.includes(pokemon.name)
+                        ? "Added to Roster"
+                        : "Add to Roster"}
                     </button>
                   </div>
                 </div>
