@@ -52,7 +52,7 @@ const PokemonCategory = ({ selectedCategories, onCategoryClick }) => {
   return (
     <div className="py-4 ml-12 ">
       {/* Header for Categories section */}
-      <div className="text-red-500 text-lg font-bold mb-6">
+      <div className="text-red-700 text-lg font-bold mb-6">
         Filter pokemons by <span className="text-white">type</span>
       </div>
 
