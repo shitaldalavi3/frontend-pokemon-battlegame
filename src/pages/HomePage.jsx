@@ -244,6 +244,12 @@ const HomePage = () => {
             </div>
             <div className="mt-2">
               <Link
+                to="/myroster"
+                className="bg-black text-white p-2 pl-5 pr-5 rounded-full inline-block transition animate-fire"
+              >
+                My Roster
+              </Link>
+              <Link
                 to="/leaderboard"
                 className="bg-black text-white p-2 pl-5 pr-5 rounded-full inline-block transition animate-fire"
               >
@@ -300,9 +306,12 @@ const HomePage = () => {
                     <button className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-400 transition">
                       Play
                     </button>
-                    <button className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-400 transition">
+                    <Link
+                      to="/myroster"
+                      className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-400 transition"
+                    >
                       Add to Roster
-                    </button>
+                    </Link>
                   </div>
                 </div>
               ))}
