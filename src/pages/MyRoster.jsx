@@ -25,6 +25,11 @@ import dragonbg from "../assets/card_bg/dragon_bg.jpg";
 import darkbg from "../assets/card_bg/dark_bg.jpg";
 import fairybg from "../assets/card_bg/fairy_bg.png";
 
+
+// Import background image for the entire page (if you're using an image as the background)
+import homepageBg from "../assets/image/bg 2.jpeg"; 
+
+
 const MyRoster = () => {
   const [roster, setRoster] = useState([]);
   const [pokemonData, setPokemonData] = useState({});
@@ -163,7 +168,16 @@ const MyRoster = () => {
         </div>
       </div>
 
-      <div className="bg-black min-h-screen">
+      <div 
+  className="min-h-screen flex"
+  style={{
+    backgroundImage: `url(${homepageBg})`,  // Use the background image
+    backgroundSize: "cover",               // Ensure the background covers the whole area
+    backgroundPosition: "center",          // Center the background
+    backgroundRepeat: "no-repeat",         // No repeating of the background image
+    backgroundAttachment: "fixed",         // This ensures the background is fixed when scrolling
+  }}>
+        
         <div className="container mx-auto py-8">
           <h1 className="text-3xl font-bold text-white mb-6">My Roster</h1>
 
