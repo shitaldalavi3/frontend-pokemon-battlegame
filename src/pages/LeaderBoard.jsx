@@ -4,39 +4,19 @@ import HomePage from "./HomePage";
 
 const LeaderBoard = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
-  const [playerName, setPlayerName] = useState([]);
 
-  // useEffect(() => {
-  //   const fetchLeaderboardData = async () => {
-  //     try {
-  //       const response = await fetch("http://localhost:8080/leaderboard");
-  //       const data = await response.json();
-  //       setLeaderboardData(data);
-  //     } catch (error) {
-  //       console.error("Error fetching leaderboard data:", error);
-  //     }
-  //   };
-
-  //   fetchLeaderboardData();
-  // }, []);
-
-  // Suppose you have a key called "username" in local storage
   useEffect(() => {
-    const fetchDataFromLocalStorage = async () => {
+    const fetchLeaderboardData = async () => {
       try {
-        const data = localStorage.getItem("username");
-        if (data) {
-          // Parse the data (assuming it's stored as JSON)
-          setPlayerName(data.result);
-          return JSON.parse(data);
-        }
-        return null; // No data found
+        const response = await fetch("http://localhost:8080/leaderboard");
+        const data = await response.json();
+        setLeaderboardData(data);
       } catch (error) {
-        console.error("Error fetching data from local storage:", error);
-        return null;
+        console.error("Error fetching leaderboard data:", error);
       }
     };
-    fetchDataFromLocalStorage();
+
+    fetchLeaderboardData();
   }, []);
 
   return (
@@ -54,7 +34,6 @@ const LeaderBoard = () => {
                 <th className="p-2">Won</th>
                 <th className="p-2">Lost </th>
                 <th className="p-2">Score</th>
-                <th className="p-2">Date</th>
               </tr>
             </thead>
             <tbody>
@@ -65,7 +44,7 @@ const LeaderBoard = () => {
                     className="border-b border-gray-600 text-black text-left"
                   >
                     <td className="p-2">{index + 1}</td>
-                    <td className="p-2 font-bold">{player}</td>
+                    <td className="p-2 font-bold">{player.username}</td>
                     <td className="p-2">{player.battles}</td>
                     <td className="p-2">{player.won}</td>
                     <td className="p-2">{player.lost}</td>
