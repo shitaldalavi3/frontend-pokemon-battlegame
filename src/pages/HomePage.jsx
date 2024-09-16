@@ -4,6 +4,7 @@ import axios from "axios";
 import PokemonCategory from "./PokemonCategory";
 import PokemonDetailsModal from "./PokemonDetailsModal";
 import MyRoster from "./MyRoster";
+import BattlePage from "./BattlePage";
 
 // Import background images for different Pokémon types
 import normalbg from "../assets/card_bg/normal_bgpng.png";
@@ -250,20 +251,32 @@ const HomePage = () => {
           </div>
 
           <div className="w-auto text-white text-right">
-            <div className="mr-3 ">
+            <div className="mr-3 p-3 gap-3">
               Hello, Player{" "}
               <span className="font-bold text-white">{username}</span>
             </div>
-            <div className="mt-2">
+            <div className="mt-2 mr-3 p3">
               <Link
                 to="/myroster"
-                className=" text-white p-2 pl-5 pr-5   hover:text-yellow-500 hover: transition animate-fire"
+                className=" text-black font-semibold p-2 pl-5 pr-5   hover:text-yellow-500 hover: transition animate-fire"
               >
                 My Roster
               </Link>
               <Link
+                to="/battle"
+                className=" text-black font-semibold p-2 pl-5 pr-5   hover:text-yellow-500 hover: transition animate-fire"
+              >
+                BattlePage
+              </Link>
+              <Link
                 to="/leaderboard"
-                className=" text-white p-2 pl-5 pr-5   hover:text-yellow-500 transition animate-fire"
+                className=" text-black font-semibold p-2 pl-5 pr-5   hover:text-yellow-500 hover: transition animate-fire"
+              >
+                LeaderBoard
+              </Link>
+              <Link
+                to="/leaderboard"
+                className=" text-black font-semibold p-2 pl-5 pr-5   hover:text-yellow-500 transition animate-fire"
               >
                 Score
               </Link>
