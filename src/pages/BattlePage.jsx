@@ -240,7 +240,11 @@ const BattlePage = () => {
               ))}
             </div>
             <div className="gap-2">
-              <img src=".\src\assets\image\flash.gif"></img>
+              <img
+                src=".\src\assets\image\flash.gif"
+                width={400}
+                alt="war-started-flash"
+              />
             </div>
             <div className="text-center bg-black">
               <h2 className="text-red-700 text-xl font-bold">Enemy Pokémon</h2>
@@ -269,7 +273,9 @@ const BattlePage = () => {
 
       {/* Show the battle result */}
       {enemyPokemon && (
-        <div className="mt-4 text-lg font-bold text-center">{result}</div>
+        <div className="mt-4 text-3xl  text-center text-red-700 font-bold">
+          {result}
+        </div>
       )}
     </div>
   );
