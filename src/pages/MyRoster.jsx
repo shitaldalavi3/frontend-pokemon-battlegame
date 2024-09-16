@@ -13,7 +13,9 @@ const MyRoster = () => {
     const fetchPokemonData = async () => {
       const pokemonDetails = {};
       for (const name of storedRoster) {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+        const response = await fetch(
+          `https://pokeapi.co/api/v2/pokemon/${name}`
+        );
         const data = await response.json();
         pokemonDetails[name] = data; // Store Pokémon data keyed by name
       }
@@ -39,7 +41,7 @@ const MyRoster = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-black min-h-screen">
       <div className="container mx-auto py-8">
         <h1 className="text-3xl font-bold mb-4">My Roster</h1>
         {roster.length > 0 ? (
