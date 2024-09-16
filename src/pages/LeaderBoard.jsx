@@ -18,25 +18,34 @@ const Leaderboard = () => {
   }, []);
 
   return (
-    <div className="bg-white min-h-screen">
-      <div className="container mx-auto py-8">
-        <h1 className="text-3xl font-bold mb-4">Leaderboard</h1>
-        <div className="bg-gray-100 p-4 rounded shadow">
+    <div className="bg-black min-h-screen text-white p-3">
+      <div className="container mx-auto py-8 p-3 ">
+        <h1 className="text-3xl font-bold mb-4 p-3 ">Leaderboard</h1>
+        <div className=" bg-red-700 rounded shadow p-3">
           <ul>
             {leaderboardData.length > 0 ? (
               leaderboardData.map((player, index) => (
-                <li key={player._id} className="mb-2">
-                  <div className="flex justify-between">
-                    <span className="font-bold">
-                      {index + 1}. {player.username}
-                    </span>
-                    <span>Score: {player.score}</span>
-                  </div>
-                  <div className="text-gray-500">
-                    Battles: {player.battles}, Wins: {player.won}, Losses: {player.lost}
-                  </div>
-                  <div className="text-gray-500">{new Date(player.date).toLocaleDateString()}</div>
-                </li>
+                <React.Fragment key={player._id}>
+                  <li className="mb-2">
+                    <div className="flex justify-between">
+                      <span className="font-bold">
+                        {index + 1}. {player.username}
+                      </span>
+                      <span>Score: {player.score}</span>
+                    </div>
+                    <div className="text-black">
+                      Battles: {player.battles}, Wins: {player.won}, Losses:{" "}
+                      {player.lost}
+                    </div>
+                    <div className="text-black" m>
+                      {new Date(player.date).toLocaleDateString()}
+                    </div>
+                  </li>
+                  {index < leaderboardData.length - 1 && (
+                    <hr className="border-gray-600" />
+                  )}
+                </React.Fragment>
+                // </li>
               ))
             ) : (
               <li>No leaderboard data available.</li>
