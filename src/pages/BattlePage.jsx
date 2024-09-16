@@ -25,7 +25,9 @@ const BattlePage = () => {
     const fetchPokemonData = async () => {
       const pokemonDetails = {};
       for (const name of storedRoster) {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+        const response = await fetch(
+          `https://pokeapi.co/api/v2/pokemon/${name}`
+        );
         const data = await response.json();
         pokemonDetails[name] = data;
       }
@@ -68,7 +70,13 @@ const BattlePage = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, score: scoreChange, battles, won, lost }),
+        body: JSON.stringify({
+          username,
+          score: scoreChange,
+          battles,
+          won,
+          lost,
+        }),
       });
 
       if (!response.ok) {
@@ -121,20 +129,28 @@ const BattlePage = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Battle Page</h1>
+    <div className="p-4 bg-black">
+      <h1 className=" text-red-700  text-2xl font-bold mb-4 text-center">
+        Battle Page
+      </h1>
 
       {/* Pokémon Selection Section */}
-      <div className="mb-4">
-        <label className="block text-lg font-bold mb-2">Select Your Pokémon:</label>
-        <div className="relative inline-block w-full">
+      <div className="mb-4 bg-black">
+        <label className="block  text-red-700 text-lg font-bold mb-2">
+          Select Your Pokémon:
+        </label>
+        <div className="relative inline-block w-full bg-black">
           <div
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className="cursor-pointer w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight flex items-center justify-between"
           >
-            <span>{playerPokemon ? playerPokemon.name : "Choose a Pokémon"}</span>
+            <span className="text-red-700">
+              {playerPokemon ? playerPokemon.name : "Choose a Pokémon"}
+            </span>
             <svg
-              className={`fill-current h-4 w-4 transform ${dropdownOpen ? "rotate-180" : ""}`}
+              className={`fill-current h-4 w-4 transform ${
+                dropdownOpen ? "rotate-180" : ""
+              }`}
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
             >
@@ -144,11 +160,11 @@ const BattlePage = () => {
 
           {/* Dropdown List */}
           {dropdownOpen && (
-            <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+            <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md text-red-700 shadow-lg max-h-60 overflow-auto">
               {roster.map((pokemon, index) => (
                 <li
                   key={index}
-                  className="cursor-pointer hover:bg-gray-100 flex items-center p-2"
+                  className="cursor-pointer hover:bg-gray-100 flex items-center p-2 bg-red-500 text-red-700"
                   onClick={() => handlePokemonSelect(pokemon)}
                 >
                   <img
@@ -156,7 +172,7 @@ const BattlePage = () => {
                     alt={pokemon}
                     className="w-8 h-8 mr-2"
                   />
-                  <span className="capitalize">{pokemon}</span>
+                  <span className="capitalize text-red-700 ">{pokemon}</span>
                 </li>
               ))}
             </ul>
@@ -165,17 +181,24 @@ const BattlePage = () => {
 
         {/* Show selected player Pokémon stats and image */}
         {playerPokemon && (
-          <div className="text-center mt-4">
-            <h2 className="text-xl font-bold">Your Pokémon</h2>
+          <div className=" text-red-700 text-center mt-4 bg-black">
+            <h2 className="text-red-700 text-xl font-bold">Your Pokémon</h2>
             <img
               src={getPokemonImageUrl(playerPokemon.name)}
               alt={playerPokemon.name}
               className="w-40 h-40 object-contain mx-auto"
             />
-            <p><strong>Name:</strong> {playerPokemon.name}</p>
-            <p><strong>Stats:</strong></p>
+            <p>
+              <strong className="text-red-700">Name:</strong>{" "}
+              {playerPokemon.name}
+            </p>
+            <p>
+              <strong className="text-red-700">Stats:</strong>
+            </p>
             {playerPokemon.stats.map((stat, index) => (
-              <p key={index}>{stat.stat.name}: {stat.base_stat}</p>
+              <p key={index} className="text-red-700">
+                {stat.stat.name}: {stat.base_stat}
+              </p>
             ))}
           </div>
         )}
@@ -183,40 +206,61 @@ const BattlePage = () => {
 
       {/* Start Battle button */}
       {playerPokemon && !enemyPokemon && (
-        <button onClick={startBattle} className="bg-green-500 text-white px-4 py-2 rounded mb-4">
+        <button
+          onClick={startBattle}
+          className="bg-red-700 text-white px-4 py-2 rounded mb-4"
+        >
           Start Battle
         </button>
       )}
 
       {/* Display stats for both player and enemy Pokémon */}
-      <div className="flex justify-around">
+      <div className="flex justify-around bg-black">
         {playerPokemon && enemyPokemon && (
           <>
-            <div className="text-center">
-              <h2 className="text-xl font-bold">Your Pokémon</h2>
+            <div className=" text-red-700 text-center">
+              <h2 className=" text-red-700 text-xl font-bold">Your Pokémon</h2>
               <img
                 src={getPokemonImageUrl(playerPokemon.name)}
                 alt={playerPokemon.name}
                 className="w-40 h-40 object-contain mx-auto"
               />
-              <p><strong>Name:</strong> {playerPokemon.name}</p>
-              <p><strong>Total Stats:</strong> {calculateTotalStats(playerPokemon)}</p>
+              <p className="text-red-700">
+                <strong className="text-red-700">Name:</strong>{" "}
+                {playerPokemon.name}
+              </p>
+              <p>
+                <strong className="text-red-700">Total Stats:</strong>{" "}
+                {calculateTotalStats(playerPokemon)}
+              </p>
               {playerPokemon.stats.map((stat, index) => (
-                <p key={index}>{stat.stat.name}: {stat.base_stat}</p>
+                <p key={index} className="text-red-700">
+                  {stat.stat.name}: {stat.base_stat}
+                </p>
               ))}
             </div>
-
-            <div className="text-center">
-              <h2 className="text-xl font-bold">Enemy Pokémon</h2>
+            <div className="gap-2">
+              <img src=".\src\assets\image\flash.gif"></img>
+            </div>
+            <div className="text-center bg-black">
+              <h2 className="text-red-700 text-xl font-bold">Enemy Pokémon</h2>
               <img
                 src={enemyPokemon.sprites.front_default}
                 alt={enemyPokemon.name}
                 className="w-40 h-40 object-contain mx-auto"
               />
-              <p><strong>Name:</strong> {enemyPokemon.name}</p>
-              <p><strong>Total Stats:</strong> {calculateTotalStats(enemyPokemon)}</p>
+              <p className="text-red-700">
+                <strong className="text-red-700">Name:</strong>{" "}
+                {enemyPokemon.name}
+              </p>
+              <p>
+                <strong className="text-red-700">Total Stats:</strong>{" "}
+                {calculateTotalStats(enemyPokemon)}
+              </p>
               {enemyPokemon.stats.map((stat, index) => (
-                <p key={index}>{stat.stat.name}: {stat.base_stat}</p>
+                <p key={index} className="text-red-700">
+                  {stat.stat.name}: {stat.base_stat}
+                </p>
               ))}
             </div>
           </>
@@ -224,7 +268,9 @@ const BattlePage = () => {
       </div>
 
       {/* Show the battle result */}
-      {enemyPokemon && <div className="mt-4 text-lg font-bold text-center">{result}</div>}
+      {enemyPokemon && (
+        <div className="mt-4 text-lg font-bold text-center">{result}</div>
+      )}
     </div>
   );
 };
