@@ -41,7 +41,7 @@ const HomePage = () => {
   const [selectedPokemon, setSelectedPokemon] = useState(null); // Pokémon selected to view in modal
   const [isModalOpen, setIsModalOpen] = useState(false); // Controls whether modal is open or not
   const [username, setUsername] = useState(""); // Stores username from localStorage
-  const [roster, setRoster] = useState([]);
+  const [roster, setRoster] = useState([]); // Roster for added Pokémon
   const navigate = useNavigate();
 
   // Fetch detailed Pokémon data for each Pokémon
@@ -81,6 +81,10 @@ const HomePage = () => {
         console.error("Error fetching Pokémon data:", error);
       }
     };
+
+    // Load roster from localStorage
+    const storedRoster = JSON.parse(localStorage.getItem("roster")) || [];
+    setRoster(storedRoster);
 
     fetchAllPokemonData();
   }, [navigate]);
@@ -145,13 +149,15 @@ const HomePage = () => {
     }
   };
 
+  // Function to add Pokémon to the roster
   const addPokemonToRoster = (pokemon) => {
     if (!roster.includes(pokemon)) {
       const updatedRoster = [...roster, pokemon];
       setRoster(updatedRoster);
       localStorage.setItem("roster", JSON.stringify(updatedRoster));
+      alert(`${pokemon} has been added to your roster!`); // Alert message after adding
     } else {
-      console.log(`${pokemon} is already in your roster!`);
+      alert(`${pokemon} is already in your roster!`); // Alert message if Pokémon is already added
     }
   };
 
@@ -246,19 +252,19 @@ const HomePage = () => {
 
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <Link to="/home">
-              <img src={logo} alt="Pokeball" className="w-[300px] h-auto" />
+              <img src={logo} alt="Pokemon dul arena " className="w-[300px] h-auto" />
             </Link>
           </div>
 
           <div className="w-auto text-white text-right">
-            <div className="mr-3 p-3 gap-3">
-              Hello, Player{" "}
+            <div>
+              Hello,{" "}
               <span className="font-bold text-white">{username}</span>
             </div>
-            <div className="mt-2 mr-3 p3">
+            <div className="mt-2 flex space-x-4 ">
               <Link
                 to="/myroster"
-                className=" text-black font-semibold p-2 pl-5 pr-5   hover:text-yellow-500 hover: transition animate-fire"
+                className="bg-black text-white p-2 pl-5 pr-5  rounded-full inline-block transition animate-fire"
               >
                 My Roster
               </Link>
@@ -297,7 +303,7 @@ const HomePage = () => {
                 value={searchTerm}
                 onChange={handleSearch}
                 placeholder="Search Pokémon by name..."
-                className="w-72 max-w-md p-3 mr-8 border rounded-3xl bg-red-500  shadow mb-4"
+                className="w-72 max-w-md p-3 mr-8 border-2 border-black rounded-2xl bg-red-500 bg-opacity-50 text-white mb-4"
               />
             </div>
 
@@ -311,13 +317,16 @@ const HomePage = () => {
 
           {/* Pokémon grid */}
           <div className="w-5/6 mt-28">
+          <h2 className="text-3xl font-semibold text-white capitalize mt-3 mb-3">
+                   All Pokemon
+                  </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 py-4">
               {pokemonToDisplay.map((pokemon) => (
                 <div
                   key={pokemon.name}
                   className="p-4 rounded shadow pokemon-card"
                   style={getBackgroundStyle(pokemon)}
-                  onClick={() => handleCardClick(pokemon)}
+                  onClick={() => handleCardClick(pokemon)} // Added onClick to the card
                 >
                   <h2 className="text-xl font-semibold text-white capitalize">
                     {pokemon.name}
@@ -327,15 +336,19 @@ const HomePage = () => {
                     alt={`${pokemon.name} sprite`}
                     className="w-full h-40 object-contain mx-auto"
                   />
-                  <div className="mt-3 space-x-3">
-                    <button className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-400 transition">
+                  <div className="mt-5 flex justify-end space-x-3">
+                    <button className="bg-red-500  bg-opacity-70 text-white px-3 py-2 rounded-xl shadow hover:bg-red-700 transition">
                       Play
                     </button>
                     <button
                       onClick={() => addPokemonToRoster(pokemon.name)}
-                      className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-400 transition"
+                      className={`${
+                        roster.includes(pokemon.name)
+                          ? "bg-gray-500"
+                          : "bg-red-500 hover:bg-red-700"
+                      } text-white px-3 py-2 rounded-xl shadow transition`}
                     >
-                      Add to Roster
+                      {roster.includes(pokemon.name) ? "Added to Roster" : "Add to Roster"}
                     </button>
                   </div>
                 </div>
