@@ -70,9 +70,6 @@ const LeaderBoard = () => {
                     <td className="p-2">{player.won}</td>
                     <td className="p-2">{player.lost}</td>
                     <td className="p-2">{player.score}</td>
-                    <td className="p-2">
-                      {new Date(player.date).toLocaleDateString()}
-                    </td>
                   </tr>
                 ))
               ) : (
