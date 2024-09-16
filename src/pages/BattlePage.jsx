@@ -106,7 +106,10 @@ const BattlePage = () => {
   };
 
   return (
-    <div className="relative w-full h-screen bg-cover bg-center" style={{ backgroundImage: `url(${battleGrounds})` }}>
+    <div
+      className="relative w-full h-screen bg-cover bg-center"
+      style={{ backgroundImage: `url(${battleGrounds})` }}
+    >
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         {/* Countdown */}
         {counter > 0 && (
@@ -119,7 +122,11 @@ const BattlePage = () => {
         {playerPokemon && enemyPokemon && counter === 0 && (
           <>
             <div className="flex flex-col items-start absolute bottom-20 left-40">
-              <img src={getPokemonImageUrl(playerPokemon, true)} alt={playerPokemon.name} className="h-64" />
+              <img
+                src={getPokemonImageUrl(playerPokemon, true)}
+                alt={playerPokemon.name}
+                className="h-64"
+              />
               <div className="mt-4 w-full flex flex-col items-start">
                 <div className="flex gap-2 items-center w-full justify-end">
                   <progress
@@ -129,13 +136,19 @@ const BattlePage = () => {
                   ></progress>
                   <span className="font-medium text-white">HP</span>
                 </div>
-                <h2 className="text-xl text-white font-medium capitalize">{playerPokemon.name}</h2>
+                <h2 className="text-xl text-white font-medium capitalize">
+                  {playerPokemon.name}
+                </h2>
               </div>
             </div>
 
             {/* Enemy's Pokemon */}
             <div className="flex flex-col items-end absolute bottom-20 right-40">
-              <img src={getPokemonImageUrl(enemyPokemon)} alt={enemyPokemon.name} className="h-64" />
+              <img
+                src={getPokemonImageUrl(enemyPokemon)}
+                alt={enemyPokemon.name}
+                className="h-64"
+              />
               <div className="mt-4 w-full flex flex-col items-end">
                 <div className="flex gap-2 items-center w-full justify-end">
                   <span className="font-medium text-white">HP</span>
@@ -145,14 +158,18 @@ const BattlePage = () => {
                     max={enemyPokemon.stats[0].base_stat}
                   ></progress>
                 </div>
-                <h2 className="text-xl text-white font-medium capitalize">{enemyPokemon.name}</h2>
+                <h2 className="text-xl text-white font-medium capitalize">
+                  {enemyPokemon.name}
+                </h2>
               </div>
             </div>
           </>
         )}
 
         {/* Show result modal */}
-        {openModal && <FightResultModal winner={winner} playerPokemon={playerPokemon} />}
+        {openModal && (
+          <FightResultModal winner={winner} playerPokemon={playerPokemon} />
+        )}
       </div>
     </div>
   );

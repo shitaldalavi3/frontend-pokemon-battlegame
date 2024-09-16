@@ -28,36 +28,36 @@ import fairybg from "../assets/card_bg/fairy_bg.png";
 import logo from "../assets/image/Design 7.png";
 
 // Import background image for the entire page
-import homepageBg from "../assets/image/bg 2.jpeg"; 
+import homepageBg from "../assets/image/bg 2.jpeg";
 
 const HomePage = () => {
   // State to store all fetched Pokémon data
   const [allPokemonData, setAllPokemonData] = useState([]);
-  
+
   // Display limit for the number of Pokémon shown at first
   const [displayLimit, setDisplayLimit] = useState(30);
-  
+
   // State for filtered Pokémon based on search or category
   const [filteredPokemon, setFilteredPokemon] = useState([]);
-  
+
   // State to store selected categories
   const [selectedCategories, setSelectedCategories] = useState([]);
-  
+
   // State to store search input
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   // State to store selected Pokémon for modal display
   const [selectedPokemon, setSelectedPokemon] = useState(null);
-  
+
   // State to control modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   // State to store username from localStorage
   const [username, setUsername] = useState("");
-  
+
   // State to store roster Pokémon
   const [roster, setRoster] = useState([]);
-  
+
   // Hook for navigation
   const navigate = useNavigate();
 
@@ -83,9 +83,13 @@ const HomePage = () => {
 
     const fetchAllPokemonData = async () => {
       try {
-        const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=500");
+        const response = await fetch(
+          "https://pokeapi.co/api/v2/pokemon?limit=500"
+        );
         const data = await response.json();
-        const detailedPokemonData = await Promise.all(data.results.map(fetchPokemonDetails));
+        const detailedPokemonData = await Promise.all(
+          data.results.map(fetchPokemonDetails)
+        );
         setAllPokemonData(detailedPokemonData.filter(Boolean));
       } catch (error) {
         console.error("Error fetching Pokémon data:", error);
@@ -173,7 +177,9 @@ const HomePage = () => {
   // Function to open the Pokémon details modal
   const handleCardClick = async (pokemon) => {
     try {
-      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`);
+      const response = await axios.get(
+        `https://pokeapi.co/api/v2/pokemon/${pokemon.name}`
+      );
       setSelectedPokemon(response.data);
       setIsModalOpen(true);
     } catch (error) {
@@ -231,7 +237,8 @@ const HomePage = () => {
   // Get Pokémon image URL
   const getPokemonImageUrl = (pokemon) => {
     return (
-      pokemon?.sprites?.other?.dream_world?.front_default || "path/to/placeholder.png"
+      pokemon?.sprites?.other?.dream_world?.front_default ||
+      "path/to/placeholder.png"
     );
   };
 
@@ -249,7 +256,10 @@ const HomePage = () => {
   return (
     <>
       {/* Navigation Bar */}
-      <div className="sticky top-0 z-10 bg-red-700 p-5 w-full" style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.9)" }}>
+      <div
+        className="sticky top-0 z-10 bg-red-700 p-5 w-full"
+        style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.9)" }}
+      >
         <div className="flex items-center justify-between">
           <div className="w-auto self-start text-sm">
             <Link to="/">
@@ -260,7 +270,16 @@ const HomePage = () => {
 
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <Link to="/home">
-              <img src={logo} alt="Pokemon dul arena" className="w-[300px] h-auto" />
+              <img
+                src={logo}
+                alt="Pokemon dul arena "
+                className="w-[300px] h-auto"
+              />
+              <img
+                src={logo}
+                alt="Pokemon dul arena"
+                className="w-[300px] h-auto"
+              />
             </Link>
           </div>
 
@@ -269,10 +288,16 @@ const HomePage = () => {
               Hello, <span className="font-bold text-white">{username}</span>
             </div>
             <div className="mt-2 flex space-x-4">
-              <Link to="/myroster" className="bg-black text-white p-2 pl-5 pr-5 rounded-full inline-block transition animate-fire">
+              <Link
+                to="/myroster"
+                className="bg-black text-white p-2 pl-5 pr-5 rounded-full inline-block transition animate-fire"
+              >
                 My Roster
               </Link>
-              <Link to="/leaderboard" className="bg-black text-white p-2 pl-5 pr-5 rounded-full inline-block transition animate-fire">
+              <Link
+                to="/leaderboard"
+                className="bg-black text-white p-2 pl-5 pr-5 rounded-full inline-block transition animate-fire"
+              >
                 Score
               </Link>
             </div>
@@ -281,13 +306,16 @@ const HomePage = () => {
       </div>
 
       {/* Main Content with Background */}
-      <div className="min-h-screen flex" style={{
-        backgroundImage: `url(${homepageBg})`, 
-        backgroundSize: "cover",               
-        backgroundPosition: "center",          
-        backgroundRepeat: "no-repeat",         
-        backgroundAttachment: "fixed",         
-      }}>
+      <div
+        className="min-h-screen flex"
+        style={{
+          backgroundImage: `url(${homepageBg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundAttachment: "fixed",
+        }}
+      >
         {/* Sidebar for categories */}
         <div className="w-1/6 sticky top-0">
           <div className="mx-auto mb-4 mt-32 ml-10">
@@ -301,35 +329,67 @@ const HomePage = () => {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <PokemonCategory selectedCategories={selectedCategories} onCategoryClick={handleCategoryClick} />
+            <PokemonCategory
+              selectedCategories={selectedCategories}
+              onCategoryClick={handleCategoryClick}
+            />
           </div>
         </div>
 
         {/* Pokémon Grid */}
         <div className="w-5/6 mt-28 overflow-y-auto h-[80vh] p-5">
-          <h2 className="text-3xl font-semibold text-white capitalize mt-3 mb-3">All Pokemon</h2>
+          <h2 className="text-3xl font-semibold text-white capitalize mt-3 mb-3">
+            All Pokemon
+          </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 py-4">
             {pokemonToDisplay.map((pokemon) => (
-              <div key={pokemon.name} className="p-4 rounded shadow pokemon-card" style={getBackgroundStyle(pokemon)}>
+              <div
+                key={pokemon.name}
+                className="p-4 rounded shadow pokemon-card"
+                style={getBackgroundStyle(pokemon)}
+              >
                 {/* Pokémon Name */}
-                <h2 className="text-xl font-semibold text-white capitalize">{pokemon.name}</h2>
+                <h2 className="text-xl font-semibold text-white capitalize">
+                  {pokemon.name}
+                </h2>
 
-              {/* Pokémon Types */}
-                  <div className="flex justify-start mt-3">
+                {/* Pokémon Types */}
+                <div className="flex justify-start mt-3">
                   {pokemon.types.map((typeInfo) => (
-                    <span key={typeInfo.type.name} className="bg-white bg-opacity-40 text-black px-2 py-1 rounded-lg mx-1 text-sm">
+                    <span
+                      key={typeInfo.type.name}
+                      className="bg-white bg-opacity-40 text-black px-2 py-1 rounded-lg mx-1 text-sm"
+                    >
                       {typeInfo.type.name}
                     </span>
                   ))}
                 </div>
                 {/* Pokémon Image */}
-                <img src={getPokemonImageUrl(pokemon)} alt={`${pokemon.name} sprite`} className="w-full h-40 object-contain mx-auto" />
+                <img
+                  src={getPokemonImageUrl(pokemon)}
+                  alt={`${pokemon.name} sprite`}
+                  className="w-full h-40 object-contain mx-auto"
+                />
 
                 {/* Play and Add to Roster Buttons */}
                 <div className="mt-5 flex justify-end space-x-3">
-                  <button onClick={() => handlePlay(pokemon)} className="bg-red-500 bg-opacity-70 text-white px-3 py-2 rounded-xl shadow hover:bg-red-700 transition">Play</button>
-                  <button onClick={() => addPokemonToRoster(pokemon.name)} className={`${roster.includes(pokemon.name) ? "bg-gray-500" : "bg-red-500 hover:bg-red-700"} text-white px-3 py-2 rounded-xl shadow transition`}>
-                    {roster.includes(pokemon.name) ? "Added to Roster" : "Add to Roster"}
+                  <button
+                    onClick={() => handlePlay(pokemon)}
+                    className="bg-red-500 bg-opacity-70 text-white px-3 py-2 rounded-xl shadow hover:bg-red-700 transition"
+                  >
+                    Play
+                  </button>
+                  <button
+                    onClick={() => addPokemonToRoster(pokemon.name)}
+                    className={`${
+                      roster.includes(pokemon.name)
+                        ? "bg-gray-500"
+                        : "bg-red-500 hover:bg-red-700"
+                    } text-white px-3 py-2 rounded-xl shadow transition`}
+                  >
+                    {roster.includes(pokemon.name)
+                      ? "Added to Roster"
+                      : "Add to Roster"}
                   </button>
                 </div>
               </div>
@@ -339,7 +399,10 @@ const HomePage = () => {
           {/* Load More Button */}
           {displayLimit < allPokemonData.length && (
             <div className="text-center mt-6">
-              <button onClick={handleLoadMore} className="bg-red-700 text-white px-6 py-2 rounded-full shadow hover:bg-white hover:text-black transition">
+              <button
+                onClick={handleLoadMore}
+                className="bg-red-700 text-white px-6 py-2 rounded-full shadow hover:bg-white hover:text-black transition"
+              >
                 Load More
               </button>
             </div>
@@ -348,7 +411,9 @@ const HomePage = () => {
       </div>
 
       {/* Modal for Pokémon details */}
-      {isModalOpen && <PokemonDetailsModal pokemon={selectedPokemon} onClose={closeModal} />}
+      {isModalOpen && (
+        <PokemonDetailsModal pokemon={selectedPokemon} onClose={closeModal} />
+      )}
     </>
   );
 };

@@ -2,3 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+.table-striped tbody tr:nth-child(odd) {
+    @apply bg-gray-100;
+  }
+  .table-striped tbody tr:nth-child(even) {
+    @apply bg-white;
+  }
