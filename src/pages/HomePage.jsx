@@ -67,8 +67,7 @@ const HomePage = () => {
           "https://pokeapi.co/api/v2/pokemon?limit=500"
         );
         const data = await response.json();
-        
-        // Fix: Use setAllPokemonData instead of setPokemonData
+
         setAllPokemonData(data.results);
 
         const detailedPokemonData = await Promise.all(
@@ -203,7 +202,6 @@ const HomePage = () => {
     return pokemon?.sprites?.other?.dream_world?.front_default || "path/to/placeholder.png"; 
   };
   
-
   // Function to handle "Load More" button click
   const handleLoadMore = () => {
     setDisplayLimit(displayLimit + 30); // Increase the display limit by 30
@@ -249,63 +247,65 @@ const HomePage = () => {
       </div>
 
       {/* Main Content with Background */}
-      <div
-        className="bg-cover bg-black bg-center bg-no-repeat min-h-screen"
-      >
+      <div className="bg-cover bg-black bg-center bg-no-repeat min-h-screen">
         <div className=" py-2 flex gap-2 max-w-full mx-auto px-2">
           {/* Sidebar for categories */}
           <div className="w-1/6">
-            <div className="flex flex-wrap gap-2 mt-4">
-              <PokemonCategory selectedCategories={selectedCategories} onCategoryClick={handleCategoryClick} />
-            </div>
-          </div>
-
-          {/* Pokémon grid */}
-          <div className="w-5/6">
-            <div className="mx-auto">
+            {/* Move the search bar above categories */}
+            <div className="mx-auto mb-4 mt-32 ml-10">
               <input
                 type="text"
                 value={searchTerm}
                 onChange={handleSearch}
                 placeholder="Search Pokémon by name..."
-                className="w-full p-2 border rounded shadow mb-4"
+                 className="w-72 max-w-md p-3 mr-8 border rounded-3xl bg-red-500  shadow mb-4"
               />
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 py-4">
-                {pokemonToDisplay.map((pokemon) => (
-                  <div
-                    key={pokemon.name}
-                    className="p-4 rounded shadow pokemon-card"
-                    style={getBackgroundStyle(pokemon)}
-                    onClick={() => handleCardClick(pokemon)}
-                  >
-                    <h2 className="text-xl font-semibold text-white capitalize">{pokemon.name}</h2>
-                    <img
-                      src={getPokemonImageUrl(pokemon)}
-                      alt={`${pokemon.name} sprite`}
-                      className="w-full h-40 object-contain mx-auto"
-                    />
-                    <div className="mt-3 space-x-3">
-                      <button className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-400 transition">
-                        Play
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Load More Button */}
-              {displayLimit < allPokemonData.length && (
-                <div className="text-center mt-6">
-                  <button
-                    onClick={handleLoadMore}
-                    className="bg-red-700 text-white px-6 py-2 rounded-full shadow hover:bg-white hover:text-black transition"
-                  >
-                    Load More
-                  </button>
-                </div>
-              )}
             </div>
+            
+            <div className="flex flex-wrap gap-2">
+              <PokemonCategory 
+                selectedCategories={selectedCategories} 
+                onCategoryClick={handleCategoryClick} 
+              />
+            </div>
+          </div>
+
+          {/* Pokémon grid */}
+          <div className="w-5/6 mt-28">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 py-4">
+              {pokemonToDisplay.map((pokemon) => (
+                <div
+                  key={pokemon.name}
+                  className="p-4 rounded shadow pokemon-card"
+                  style={getBackgroundStyle(pokemon)}
+                  onClick={() => handleCardClick(pokemon)}
+                >
+                  <h2 className="text-xl font-semibold text-white capitalize">{pokemon.name}</h2>
+                  <img
+                    src={getPokemonImageUrl(pokemon)}
+                    alt={`${pokemon.name} sprite`}
+                    className="w-full h-40 object-contain mx-auto"
+                  />
+                  <div className="mt-3 space-x-3">
+                    <button className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-400 transition">
+                      Play
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Load More Button */}
+            {displayLimit < allPokemonData.length && (
+              <div className="text-center mt-6">
+                <button
+                  onClick={handleLoadMore}
+                  className="bg-red-700 text-white px-6 py-2 rounded-full shadow hover:bg-white hover:text-black transition"
+                >
+                  Load More
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
