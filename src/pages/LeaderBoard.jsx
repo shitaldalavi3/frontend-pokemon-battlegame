@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const Leaderboard = () => {
+const LeaderBoard = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
 
   useEffect(() => {
@@ -57,4 +57,4 @@ const Leaderboard = () => {
   );
 };
 
-export default Leaderboard;
+export default LeaderBoard;

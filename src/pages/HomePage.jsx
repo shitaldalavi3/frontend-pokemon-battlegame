@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import PokemonCategory from "./PokemonCategory";
 import PokemonDetailsModal from "./PokemonDetailsModal";
+import MyRoster from "./MyRoster";
 
 // Import background images for different Pokémon types
 import normalbg from "../assets/card_bg/normal_bgpng.png";
@@ -39,6 +40,7 @@ const HomePage = () => {
   const [selectedPokemon, setSelectedPokemon] = useState(null); // Pokémon selected to view in modal
   const [isModalOpen, setIsModalOpen] = useState(false); // Controls whether modal is open or not
   const [username, setUsername] = useState(""); // Stores username from localStorage
+  const [roster, setRoster] = useState([]);
   const navigate = useNavigate();
 
   // Fetch detailed Pokémon data for each Pokémon
@@ -142,6 +144,16 @@ const HomePage = () => {
     }
   };
 
+  const addPokemonToRoster = (pokemon) => {
+    if (!roster.includes(pokemon)) {
+      const updatedRoster = [...roster, pokemon];
+      setRoster(updatedRoster);
+      localStorage.setItem("roster", JSON.stringify(updatedRoster));
+    } else {
+      console.log(`${pokemon} is already in your roster!`);
+    }
+  };
+
   const handleCardClick = async (pokemon) => {
     try {
       const response = await axios.get(
@@ -199,23 +211,30 @@ const HomePage = () => {
 
   const getPokemonImageUrl = (pokemon) => {
     // Fallback in case dream_world sprite is not available
-    return pokemon?.sprites?.other?.dream_world?.front_default || "path/to/placeholder.png"; 
+    return (
+      pokemon?.sprites?.other?.dream_world?.front_default ||
+      "path/to/placeholder.png"
+    );
   };
-  
+
   // Function to handle "Load More" button click
   const handleLoadMore = () => {
     setDisplayLimit(displayLimit + 30); // Increase the display limit by 30
   };
 
   // Determine which Pokémon to display based on search term, selected categories, and display limit
-  const pokemonToDisplay = searchTerm === "" && selectedCategories.length === 0
-    ? allPokemonData.slice(0, displayLimit) // Show up to the current display limit
-    : filteredPokemon.slice(0, displayLimit); // Apply limit to filtered Pokémon
+  const pokemonToDisplay =
+    searchTerm === "" && selectedCategories.length === 0
+      ? allPokemonData.slice(0, displayLimit) // Show up to the current display limit
+      : filteredPokemon.slice(0, displayLimit); // Apply limit to filtered Pokémon
 
   return (
     <>
       {/* Navigation Bar */}
-      <div className="sticky top-0 z-10 bg-red-700 p-5 w-full" style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.9)" }}>
+      <div
+        className="sticky top-0 z-10 bg-red-700 p-5 w-full"
+        style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.9)" }}
+      >
         <div className="flex items-center justify-between">
           <div className="w-auto self-start text-sm">
             <Link to="/">
@@ -232,9 +251,16 @@ const HomePage = () => {
 
           <div className="w-auto text-white text-right">
             <div>
-              Hello, Player <span className="font-bold text-white">{username}</span>
+              Hello, Player{" "}
+              <span className="font-bold text-white">{username}</span>
             </div>
             <div className="mt-2">
+              <Link
+                to="/myroster"
+                className="bg-black text-white p-2 pl-5 pr-5 rounded-full inline-block transition animate-fire"
+              >
+                My Roster
+              </Link>
               <Link
                 to="/leaderboard"
                 className="bg-black text-white p-2 pl-5 pr-5 rounded-full inline-block transition animate-fire"
@@ -258,14 +284,14 @@ const HomePage = () => {
                 value={searchTerm}
                 onChange={handleSearch}
                 placeholder="Search Pokémon by name..."
-                 className="w-72 max-w-md p-3 mr-8 border rounded-3xl bg-red-500  shadow mb-4"
+                className="w-72 max-w-md p-3 mr-8 border rounded-3xl bg-red-500  shadow mb-4"
               />
             </div>
-            
+
             <div className="flex flex-wrap gap-2">
-              <PokemonCategory 
-                selectedCategories={selectedCategories} 
-                onCategoryClick={handleCategoryClick} 
+              <PokemonCategory
+                selectedCategories={selectedCategories}
+                onCategoryClick={handleCategoryClick}
               />
             </div>
           </div>
@@ -280,7 +306,9 @@ const HomePage = () => {
                   style={getBackgroundStyle(pokemon)}
                   onClick={() => handleCardClick(pokemon)}
                 >
-                  <h2 className="text-xl font-semibold text-white capitalize">{pokemon.name}</h2>
+                  <h2 className="text-xl font-semibold text-white capitalize">
+                    {pokemon.name}
+                  </h2>
                   <img
                     src={getPokemonImageUrl(pokemon)}
                     alt={`${pokemon.name} sprite`}
@@ -289,6 +317,12 @@ const HomePage = () => {
                   <div className="mt-3 space-x-3">
                     <button className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-400 transition">
                       Play
+                    </button>
+                    <button
+                      onClick={() => addPokemonToRoster(pokemon.name)}
+                      className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-400 transition"
+                    >
+                      Add to Roster
                     </button>
                   </div>
                 </div>
