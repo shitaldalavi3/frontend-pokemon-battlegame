@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import FightResultModal from "./FightResultModal";
+import battleGrounds from "../assets/image/bg 4.jpeg"; // Replace with the correct background image path
 
 const BattlePage = () => {
   const location = useLocation();
   const selectedPokemon = location.state?.selectedPokemon || null; // Retrieve selected Pokemon from state
   const [playerPokemon, setPlayerPokemon] = useState(null);
   const [enemyPokemon, setEnemyPokemon] = useState(null);
-  const [result, setResult] = useState("");
+  const [playerHealth, setPlayerHealth] = useState(0);
+  const [enemyHealth, setEnemyHealth] = useState(0);
+  const [fightStarted, setFightStarted] = useState(false);
+  const [fightEnded, setFightEnded] = useState(false);
+  const [winner, setWinner] = useState(null);
+  const [counter, setCounter] = useState(3);
+  const [openModal, setOpenModal] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (selectedPokemon) {
@@ -25,6 +35,19 @@ const BattlePage = () => {
     return pokemon.stats.reduce((total, stat) => total + stat.base_stat, 0);
   };
 
+  // Start the countdown and battle
+  useEffect(() => {
+    if (counter > 0) {
+      const countdownInterval = setInterval(() => {
+        setCounter((prevCounter) => prevCounter - 1);
+      }, 1000);
+
+      return () => clearInterval(countdownInterval);
+    } else if (counter === 0) {
+      startBattle();
+    }
+  }, [counter]);
+
   const startBattle = async () => {
     if (!playerPokemon) {
       alert("Please select a Pokémon to battle with.");
@@ -33,50 +56,104 @@ const BattlePage = () => {
 
     const enemy = await getRandomPokemon();
     setEnemyPokemon(enemy);
+    setPlayerHealth(playerPokemon.stats[0].base_stat);
+    setEnemyHealth(enemy.stats[0].base_stat);
 
-    const playerTotalStats = calculateTotalStats(playerPokemon);
-    const enemyTotalStats = calculateTotalStats(enemy);
+    const playerAttack = playerPokemon.stats[1].base_stat;
+    const opponentDefense = enemy.stats[2].base_stat;
+    const opponentAttack = enemy.stats[1].base_stat;
+    const playerDefense = playerPokemon.stats[2].base_stat;
 
-    let battleResult;
-    if (playerTotalStats > enemyTotalStats) {
-      battleResult = "You win!";
-    } else if (playerTotalStats < enemyTotalStats) {
-      battleResult = "You lose!";
-    } else {
-      battleResult = "It's a tie!";
-    }
+    const damageToOpponent = Math.max(playerAttack - opponentDefense, 10);
+    const damageToPlayer = Math.max(opponentAttack - playerDefense, 10);
 
-    setResult(battleResult);
+    const battleInterval = setInterval(() => {
+      setEnemyHealth((prev) => {
+        const newHealth = Math.max(prev - damageToOpponent, 0);
+        if (newHealth <= 0) {
+          clearInterval(battleInterval);
+          setFightEnded(true);
+          setWinner(playerPokemon);
+        }
+        return newHealth;
+      });
+
+      setPlayerHealth((prev) => {
+        const newHealth = Math.max(prev - damageToPlayer, 0);
+        if (newHealth <= 0) {
+          clearInterval(battleInterval);
+          setFightEnded(true);
+          setWinner(enemy);
+        }
+        return newHealth;
+      });
+    }, 1000);
   };
 
-  const getPokemonImageUrl = (pokemon) => {
-    return pokemon?.sprites?.front_default || "";
+  // Show result modal after the battle ends
+  useEffect(() => {
+    if (fightEnded) {
+      setTimeout(() => {
+        setOpenModal(true);
+      }, 2000);
+    }
+  }, [fightEnded]);
+
+  const getPokemonImageUrl = (pokemon, isBackImage = false) => {
+    return isBackImage
+      ? pokemon?.sprites?.back_default || ""
+      : pokemon?.sprites?.front_default || "";
   };
 
   return (
-    <div className="p-4 bg-black">
-      <h1 className="text-red-700 text-2xl font-bold mb-4 text-center">Battle Page</h1>
-      {playerPokemon && (
-        <div className="text-red-700 text-center mt-4 bg-black">
-          <h2 className="text-red-700 text-xl font-bold">Your Pokémon</h2>
-          <img src={getPokemonImageUrl(playerPokemon)} alt={playerPokemon.name} className="w-40 h-40 object-contain mx-auto" />
-          <p><strong className="text-red-700">Name:</strong> {playerPokemon.name}</p>
-          <button onClick={startBattle} className="bg-red-700 text-white px-4 py-2 rounded mb-4">
-            Start Battle
-          </button>
-        </div>
-      )}
-      {enemyPokemon && (
-        <div className="text-center bg-black">
-          <h2 className="text-red-700 text-xl font-bold">Enemy Pokémon</h2>
-          <img src={enemyPokemon.sprites.front_default} alt={enemyPokemon.name} className="w-40 h-40 object-contain mx-auto" />
-          <p className="text-red-700"><strong>Name:</strong> {enemyPokemon.name}</p>
-          <p className="text-red-700"><strong>Total Stats:</strong> {calculateTotalStats(enemyPokemon)}</p>
-        </div>
-      )}
-      {result && (
-        <div className="mt-4 text-3xl text-center text-red-700 font-bold">{result}</div>
-      )}
+    <div className="relative w-full h-screen bg-cover bg-center" style={{ backgroundImage: `url(${battleGrounds})` }}>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        {/* Countdown */}
+        {counter > 0 && (
+          <span className="countdown font-bold italic text-[400px] text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+            {counter}
+          </span>
+        )}
+
+        {/* Player's Pokemon */}
+        {playerPokemon && enemyPokemon && counter === 0 && (
+          <>
+            <div className="flex flex-col items-start absolute bottom-20 left-40">
+              <img src={getPokemonImageUrl(playerPokemon, true)} alt={playerPokemon.name} className="h-64" />
+              <div className="mt-4 w-full flex flex-col items-start">
+                <div className="flex gap-2 items-center w-full justify-end">
+                  <progress
+                    className="progress progress-error w-56 bg-white"
+                    value={playerHealth}
+                    max={playerPokemon.stats[0].base_stat}
+                  ></progress>
+                  <span className="font-medium text-white">HP</span>
+                </div>
+                <h2 className="text-xl text-white font-medium capitalize">{playerPokemon.name}</h2>
+              </div>
+            </div>
+
+            {/* Enemy's Pokemon */}
+            <div className="flex flex-col items-end absolute bottom-20 right-40">
+              <img src={getPokemonImageUrl(enemyPokemon)} alt={enemyPokemon.name} className="h-64" />
+              <div className="mt-4 w-full flex flex-col items-end">
+                <div className="flex gap-2 items-center w-full justify-end">
+                  <span className="font-medium text-white">HP</span>
+                  <progress
+                    className="progress progress-error w-56 bg-white"
+                    value={enemyHealth}
+                    max={enemyPokemon.stats[0].base_stat}
+                  ></progress>
+                </div>
+                <h2 className="text-xl text-white font-medium capitalize">{enemyPokemon.name}</h2>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Show result modal */}
+        {openModal && <FightResultModal winner={winner} playerPokemon={playerPokemon} />}
+      </div>
     </div>
   );
 };

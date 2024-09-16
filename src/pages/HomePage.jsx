@@ -313,16 +313,18 @@ const HomePage = () => {
               <div key={pokemon.name} className="p-4 rounded shadow pokemon-card" style={getBackgroundStyle(pokemon)}>
                 {/* Pokémon Name */}
                 <h2 className="text-xl font-semibold text-white capitalize">{pokemon.name}</h2>
-                {/* Pokémon Image */}
-                <img src={getPokemonImageUrl(pokemon)} alt={`${pokemon.name} sprite`} className="w-full h-40 object-contain mx-auto" />
-                {/* Pokémon Types */}
-                <div className="flex justify-start mt-3">
+
+              {/* Pokémon Types */}
+                  <div className="flex justify-start mt-3">
                   {pokemon.types.map((typeInfo) => (
-                    <span key={typeInfo.type.name} className="bg-white bg-opacity-40 text-black px-2 py-1 rounded-xl mx-1 text-sm">
+                    <span key={typeInfo.type.name} className="bg-white bg-opacity-40 text-black px-2 py-1 rounded-lg mx-1 text-sm">
                       {typeInfo.type.name}
                     </span>
                   ))}
                 </div>
+                {/* Pokémon Image */}
+                <img src={getPokemonImageUrl(pokemon)} alt={`${pokemon.name} sprite`} className="w-full h-40 object-contain mx-auto" />
+
                 {/* Play and Add to Roster Buttons */}
                 <div className="mt-5 flex justify-end space-x-3">
                   <button onClick={() => handlePlay(pokemon)} className="bg-red-500 bg-opacity-70 text-white px-3 py-2 rounded-xl shadow hover:bg-red-700 transition">Play</button>
