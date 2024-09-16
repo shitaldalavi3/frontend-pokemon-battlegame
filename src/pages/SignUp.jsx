@@ -1,8 +1,7 @@
-// src/pages/Signup.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import signupbg from "../assets/image/signup bg.jpeg";
-import pokeball from '../assets/image/pokeball.png';
+import pokemonlogo from '../assets/image/pokemon_logo_maroon_red_black.png'; 
 
 function Signup() {
   const [username, setUsername] = useState("");
@@ -35,16 +34,25 @@ function Signup() {
 
       {/* Popup for entering the username */}
       {showPopup && (
-        <div className="flex items-center justify-center fixed inset-0 mt-16 ">
+        <div className="flex items-center justify-center fixed inset-0 mt-16">
           <form
             onSubmit={handleNameSubmit}
             className=" p-10 relative rounded shadow-lg text-center"
             style={{ transform: "translateX(-55px)" }}
           >
+            {/* Pokémon Logo */}
+            <img
+              src={pokemonlogo}
+              alt="Pokemon Logo"
+              className="w-80 mx-auto mb-4" 
+            />
+
+            {/* Heading */}
             <h2 className="text-3xl text-white text-center font-semibold mb-4">
-            Welcome to Pokémon <br />
-            Begin Your Epic Adventure!
-            </h2> 
+              Welcome to Pokémon <br />
+              Begin Your Epic Adventure!
+            </h2>
+
             <div className="m-4 mt-10">
               <input
                 type="text"
