@@ -31,37 +31,18 @@ import logo from "../assets/image/Design 7.png";
 import homepageBg from "../assets/image/bg 2.jpeg";
 
 const HomePage = () => {
-  // State to store all fetched Pokémon data
-  const [allPokemonData, setAllPokemonData] = useState([]);
+  const [allPokemonData, setAllPokemonData] = useState([]); // State to store all fetched Pokémon data
+  const [displayLimit, setDisplayLimit] = useState(30); // Display limit for the number of Pokémon shown at first
+  const [filteredPokemon, setFilteredPokemon] = useState([]); // State for filtered Pokémon based on search or category
+  const [selectedCategories, setSelectedCategories] = useState([]); // State to store selected categories
+  const [searchTerm, setSearchTerm] = useState(""); // State to store search input
+  const [selectedPokemon, setSelectedPokemon] = useState(null); // State to store selected Pokémon for modal display
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  const [username, setUsername] = useState(""); // State to store username from localStorage
+  const [roster, setRoster] = useState([]); // State to store roster Pokémon
+  const navigate = useNavigate(); // Hook for navigation
 
-  // Display limit for the number of Pokémon shown at first
-  const [displayLimit, setDisplayLimit] = useState(30);
-
-  // State for filtered Pokémon based on search or category
-  const [filteredPokemon, setFilteredPokemon] = useState([]);
-
-  // State to store selected categories
-  const [selectedCategories, setSelectedCategories] = useState([]);
-
-  // State to store search input
-  const [searchTerm, setSearchTerm] = useState("");
-
-  // State to store selected Pokémon for modal display
-  const [selectedPokemon, setSelectedPokemon] = useState(null);
-
-  // State to control modal visibility
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // State to store username from localStorage
-  const [username, setUsername] = useState("");
-
-  // State to store roster Pokémon
-  const [roster, setRoster] = useState([]);
-
-  // Hook for navigation
-  const navigate = useNavigate();
-
-  // Function to fetch detailed Pokémon data for each Pokémon
+  // Fetch detailed Pokémon data for each Pokémon
   const fetchPokemonDetails = async (pokemon) => {
     try {
       const response = await axios.get(pokemon.url);
@@ -103,7 +84,7 @@ const HomePage = () => {
     fetchAllPokemonData();
   }, [navigate]);
 
-  // Function to handle category filtering
+  // Handle category filtering
   const handleCategoryClick = async (category) => {
     if (category === "all") {
       setSelectedCategories([]);
@@ -162,7 +143,7 @@ const HomePage = () => {
     }
   };
 
-  // Function to add Pokémon to the roster
+  // Add Pokémon to the roster
   const addPokemonToRoster = (pokemon) => {
     if (!roster.includes(pokemon)) {
       const updatedRoster = [...roster, pokemon];
@@ -174,14 +155,14 @@ const HomePage = () => {
     }
   };
 
-  // Function to open the Pokémon details modal
+  // Open Pokémon details modal
   const handleCardClick = async (pokemon) => {
     try {
       const response = await axios.get(
         `https://pokeapi.co/api/v2/pokemon/${pokemon.name}`
       );
       setSelectedPokemon(response.data);
-      setIsModalOpen(true);
+      setIsModalOpen(true); // Open the modal
     } catch (error) {
       console.error("Error fetching Pokémon details:", error);
     }
@@ -193,7 +174,7 @@ const HomePage = () => {
     setSelectedPokemon(null);
   };
 
-  // Function to navigate to the battle page with the selected Pokémon
+  // Navigate to the battle page with the selected Pokémon
   const handlePlay = (pokemon) => {
     navigate("/battle", { state: { selectedPokemon: pokemon } });
   };
@@ -275,11 +256,6 @@ const HomePage = () => {
                 alt="Pokemon dul arena "
                 className="w-[300px] h-auto"
               />
-              <img
-                src={logo}
-                alt="Pokemon dul arena"
-                className="w-[300px] h-auto"
-              />
             </Link>
           </div>
 
@@ -347,6 +323,7 @@ const HomePage = () => {
                 key={pokemon.name}
                 className="p-4 rounded shadow pokemon-card"
                 style={getBackgroundStyle(pokemon)}
+                onClick={() => handleCardClick(pokemon)} // Add the onClick event here
               >
                 {/* Pokémon Name */}
                 <h2 className="text-xl font-semibold text-white capitalize">
@@ -374,13 +351,19 @@ const HomePage = () => {
                 {/* Play and Add to Roster Buttons */}
                 <div className="mt-5 flex justify-end space-x-3">
                   <button
-                    onClick={() => handlePlay(pokemon)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent modal from opening when clicking Play button
+                      handlePlay(pokemon);
+                    }}
                     className="bg-red-500 bg-opacity-70 text-white px-3 py-2 rounded-xl shadow hover:bg-red-700 transition"
                   >
                     Play
                   </button>
                   <button
-                    onClick={() => addPokemonToRoster(pokemon.name)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent modal from opening when clicking Add to Roster button
+                      addPokemonToRoster(pokemon.name);
+                    }}
                     className={`${
                       roster.includes(pokemon.name)
                         ? "bg-gray-500"
