@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import PokemonDetailsModal from "./PokemonDetailsModal"; // Import your modal component
 
 // Import the logo for the navbar
@@ -25,14 +25,24 @@ import dragonbg from "../assets/card_bg/dragon_bg.jpg";
 import darkbg from "../assets/card_bg/dark_bg.jpg";
 import fairybg from "../assets/card_bg/fairy_bg.png";
 
+// Import background image for the entire page
+import homepageBg from "../assets/image/bg 2.jpeg";
+
 const MyRoster = () => {
   const [roster, setRoster] = useState([]);
   const [pokemonData, setPokemonData] = useState({});
   const [selectedPokemon, setSelectedPokemon] = useState(null); // For selected Pokémon details modal
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+  const [username, setUsername] = useState(""); // State for the username
+  const navigate = useNavigate(); // To navigate to battle page
 
+  // Fetch username from localStorage and load roster on component mount
   useEffect(() => {
-    // Load the roster from localStorage when the component mounts
+    const storedUsername = JSON.parse(localStorage.getItem("username"));
+    if (storedUsername) {
+      setUsername(storedUsername); // Set username if found in localStorage
+    }
+
     const storedRoster = JSON.parse(localStorage.getItem("roster")) || [];
     setRoster(storedRoster);
 
@@ -51,6 +61,11 @@ const MyRoster = () => {
 
     fetchPokemonData();
   }, []);
+
+  // Function to navigate to the battle page with the selected Pokémon
+  const handlePlay = (pokemon) => {
+    navigate("/battle", { state: { selectedPokemon: pokemonData[pokemon] } }); // Navigate to battle with selected Pokémon
+  };
 
   // Function to open modal with selected Pokémon details
   const openModal = (pokemon) => {
@@ -123,15 +138,16 @@ const MyRoster = () => {
   return (
     <>
       {/* Navigation Bar */}
-      <div
+       {/* Navigation Bar */}
+       <div
         className="sticky top-0 z-10 bg-red-700 p-5 w-full"
         style={{ boxShadow: "0 4px 8px rgba(0, 0, 0, 0.9)" }}
       >
         <div className="flex items-center justify-between">
-          <div className="w-auto self-start text-sm">
+        <div className="w-auto self-start text-sm">
             <Link to="/">
               <span className="text-white">Exit </span>
-              <span className="font-semibold text-white">Username</span>
+              <span className="font-semibold text-white">{username}</span>
             </Link>
           </div>
 
@@ -143,7 +159,7 @@ const MyRoster = () => {
 
           <div className="w-auto text-white text-right">
             <div>
-              Hello, <span className="font-bold text-white">Username</span>
+              Hello, <span className="font-bold text-white">{username}</span>
             </div>
             <div className="mt-2 flex space-x-4 ">
               <Link
@@ -163,7 +179,16 @@ const MyRoster = () => {
         </div>
       </div>
 
-      <div className="bg-black min-h-screen">
+      <div
+        className="min-h-screen flex"
+        style={{
+          backgroundImage: `url(${homepageBg})`,  // Use the background image
+          backgroundSize: "cover",               // Ensure the background covers the whole area
+          backgroundPosition: "center",          // Center the background
+          backgroundRepeat: "no-repeat",         // No repeating of the background image
+          backgroundAttachment: "fixed",         // This ensures the background is fixed when scrolling
+        }}
+      >
         <div className="container mx-auto py-8">
           <h1 className="text-3xl font-bold text-white mb-6">My Roster</h1>
 
@@ -185,9 +210,17 @@ const MyRoster = () => {
                     className="w-full h-40 object-contain mx-auto"
                   />
                   <div className="mt-5 flex justify-end space-x-3">
-                    <button className="bg-red-500  bg-opacity-70 text-white px-3 py-2 rounded-xl shadow hover:bg-red-700 transition">
+                    {/* Play Button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent opening the modal when clicking "Play"
+                        handlePlay(pokemon); // Navigate to the battle page
+                      }}
+                      className="bg-red-500 bg-opacity-70 text-white px-3 py-2 rounded-xl shadow hover:bg-red-700 transition"
+                    >
                       Play
                     </button>
+                    {/* Remove Button */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation(); // Prevent triggering the modal when clicking "Remove"

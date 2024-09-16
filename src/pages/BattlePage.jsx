@@ -1,41 +1,28 @@
-// src/pages/BattlePage.jsx
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import FightResultModal from "./FightResultModal";
+import battleGrounds from "../assets/image/bg 4.jpeg"; // Replace with the correct background image path
 
 const BattlePage = () => {
+  const location = useLocation();
+  const selectedPokemon = location.state?.selectedPokemon || null; // Retrieve selected Pokemon from state
   const [playerPokemon, setPlayerPokemon] = useState(null);
   const [enemyPokemon, setEnemyPokemon] = useState(null);
-  const [result, setResult] = useState("");
-  const [roster, setRoster] = useState([]);
-  const [pokemonData, setPokemonData] = useState({});
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [playerHealth, setPlayerHealth] = useState(0);
+  const [enemyHealth, setEnemyHealth] = useState(0);
+  const [fightStarted, setFightStarted] = useState(false);
+  const [fightEnded, setFightEnded] = useState(false);
+  const [winner, setWinner] = useState(null);
+  const [counter, setCounter] = useState(3);
+  const [openModal, setOpenModal] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if username exists, otherwise redirect to signup
-    const username = localStorage.getItem("username");
-    if (!username) {
-      navigate("/signup");
-      return;
+    if (selectedPokemon) {
+      setPlayerPokemon(selectedPokemon); // Set the selected Pokemon as player's Pokemon
     }
-
-    const storedRoster = JSON.parse(localStorage.getItem("roster")) || [];
-    setRoster(storedRoster);
-
-    const fetchPokemonData = async () => {
-      const pokemonDetails = {};
-      for (const name of storedRoster) {
-        const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/${name}`
-        );
-        const data = await response.json();
-        pokemonDetails[name] = data;
-      }
-      setPokemonData(pokemonDetails);
-    };
-
-    fetchPokemonData();
-  }, [navigate]);
+  }, [selectedPokemon]);
 
   const getRandomPokemon = async () => {
     const id = Math.floor(Math.random() * 898) + 1;
@@ -48,47 +35,18 @@ const BattlePage = () => {
     return pokemon.stats.reduce((total, stat) => total + stat.base_stat, 0);
   };
 
-  const updateScore = async (battleResult) => {
-    let scoreChange = 0;
-    let won = 0;
-    let lost = 0;
+  // Start the countdown and battle
+  useEffect(() => {
+    if (counter > 0) {
+      const countdownInterval = setInterval(() => {
+        setCounter((prevCounter) => prevCounter - 1);
+      }, 1000);
 
-    if (battleResult === "You win!") {
-      scoreChange = 10;
-      won = 1;
-    } else if (battleResult === "You lose!") {
-      scoreChange = -5;
-      lost = 1;
+      return () => clearInterval(countdownInterval);
+    } else if (counter === 0) {
+      startBattle();
     }
-
-    const battles = 1;
-    const username = JSON.parse(localStorage.getItem("username"));
-
-    try {
-      const response = await fetch("http://localhost:8080/leaderboard", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          battles,
-          lost,
-          won,
-          score: scoreChange,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update score");
-      }
-
-      const data = await response.json();
-      console.log("Score updated successfully:", data);
-    } catch (error) {
-      console.error("Error updating score:", error);
-    }
-  };
+  }, [counter]);
 
   const startBattle = async () => {
     if (!playerPokemon) {
@@ -98,185 +56,121 @@ const BattlePage = () => {
 
     const enemy = await getRandomPokemon();
     setEnemyPokemon(enemy);
+    setPlayerHealth(playerPokemon.stats[0].base_stat);
+    setEnemyHealth(enemy.stats[0].base_stat);
 
-    const playerTotalStats = calculateTotalStats(playerPokemon);
-    const enemyTotalStats = calculateTotalStats(enemy);
+    const playerAttack = playerPokemon.stats[1].base_stat;
+    const opponentDefense = enemy.stats[2].base_stat;
+    const opponentAttack = enemy.stats[1].base_stat;
+    const playerDefense = playerPokemon.stats[2].base_stat;
 
-    let battleResult;
-    if (playerTotalStats > enemyTotalStats) {
-      battleResult = "You win!";
-    } else if (playerTotalStats < enemyTotalStats) {
-      battleResult = "You lose!";
-    } else {
-      battleResult = "It's a tie!";
-    }
+    const damageToOpponent = Math.max(playerAttack - opponentDefense, 10);
+    const damageToPlayer = Math.max(opponentAttack - playerDefense, 10);
 
-    setResult(battleResult);
+    const battleInterval = setInterval(() => {
+      setEnemyHealth((prev) => {
+        const newHealth = Math.max(prev - damageToOpponent, 0);
+        if (newHealth <= 0) {
+          clearInterval(battleInterval);
+          setFightEnded(true);
+          setWinner(playerPokemon);
+        }
+        return newHealth;
+      });
 
-    await updateScore(battleResult);
+      setPlayerHealth((prev) => {
+        const newHealth = Math.max(prev - damageToPlayer, 0);
+        if (newHealth <= 0) {
+          clearInterval(battleInterval);
+          setFightEnded(true);
+          setWinner(enemy);
+        }
+        return newHealth;
+      });
+    }, 1000);
   };
 
-  const getPokemonImageUrl = (pokemon) => {
-    if (pokemonData[pokemon]) {
-      return pokemonData[pokemon].sprites.front_default;
+  // Show result modal after the battle ends
+  useEffect(() => {
+    if (fightEnded) {
+      setTimeout(() => {
+        setOpenModal(true);
+      }, 2000);
     }
-    return "";
-  };
+  }, [fightEnded]);
 
-  const handlePokemonSelect = (pokemon) => {
-    setPlayerPokemon(pokemonData[pokemon]);
-    setDropdownOpen(false);
+  const getPokemonImageUrl = (pokemon, isBackImage = false) => {
+    return isBackImage
+      ? pokemon?.sprites?.back_default || ""
+      : pokemon?.sprites?.front_default || "";
   };
 
   return (
-    <div className="p-4 bg-black">
-      <h1 className=" text-red-700  text-2xl font-bold mb-4 text-center">
-        Battle Page
-      </h1>
-
-      {/* Pokémon Selection Section */}
-      <div className="mb-4 bg-black">
-        <label className="block  text-red-700 text-lg font-bold mb-2">
-          Select Your Pokémon:
-        </label>
-        <div className="relative inline-block w-full bg-black">
-          <div
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="cursor-pointer w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight flex items-center justify-between"
-          >
-            <span className="text-red-700">
-              {playerPokemon ? playerPokemon.name : "Choose a Pokémon"}
-            </span>
-            <svg
-              className={`fill-current h-4 w-4 transform ${
-                dropdownOpen ? "rotate-180" : ""
-              }`}
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-            >
-              <path d="M0 0l10 10 10-10H0z" />
-            </svg>
-          </div>
-
-          {/* Dropdown List */}
-          {dropdownOpen && (
-            <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md text-red-700 shadow-lg max-h-60 overflow-auto">
-              {roster.map((pokemon, index) => (
-                <li
-                  key={index}
-                  className="cursor-pointer hover:bg-gray-100 flex items-center p-2 bg-red-500 text-red-700"
-                  onClick={() => handlePokemonSelect(pokemon)}
-                >
-                  <img
-                    src={getPokemonImageUrl(pokemon)}
-                    alt={pokemon}
-                    className="w-8 h-8 mr-2"
-                  />
-                  <span className="capitalize text-red-700 ">{pokemon}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        {/* Show selected player Pokémon stats and image */}
-        {playerPokemon && (
-          <div className=" text-red-700 text-center mt-4 bg-black">
-            <h2 className="text-red-700 text-xl font-bold">Your Pokémon</h2>
-            <img
-              src={getPokemonImageUrl(playerPokemon.name)}
-              alt={playerPokemon.name}
-              className="w-40 h-40 object-contain mx-auto"
-            />
-            <p>
-              <strong className="text-red-700">Name:</strong>{" "}
-              {playerPokemon.name}
-            </p>
-            <p>
-              <strong className="text-red-700">Stats:</strong>
-            </p>
-            {playerPokemon.stats.map((stat, index) => (
-              <p key={index} className="text-red-700">
-                {stat.stat.name}: {stat.base_stat}
-              </p>
-            ))}
-          </div>
+    <div
+      className="relative w-full h-screen bg-cover bg-center"
+      style={{ backgroundImage: `url(${battleGrounds})` }}
+    >
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        {/* Countdown */}
+        {counter > 0 && (
+          <span className="countdown font-bold italic text-[400px] text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+            {counter}
+          </span>
         )}
-      </div>
 
-      {/* Start Battle button */}
-      {playerPokemon && !enemyPokemon && (
-        <button
-          onClick={startBattle}
-          className="bg-red-700 text-white px-4 py-2 rounded mb-4"
-        >
-          Start Battle
-        </button>
-      )}
-
-      {/* Display stats for both player and enemy Pokémon */}
-      <div className="flex justify-around bg-black">
-        {playerPokemon && enemyPokemon && (
+        {/* Player's Pokemon */}
+        {playerPokemon && enemyPokemon && counter === 0 && (
           <>
-            <div className=" text-red-700 text-center">
-              <h2 className=" text-red-700 text-xl font-bold">Your Pokémon</h2>
+            <div className="flex flex-col items-start absolute bottom-20 left-40">
               <img
-                src={getPokemonImageUrl(playerPokemon.name)}
+                src={getPokemonImageUrl(playerPokemon, true)}
                 alt={playerPokemon.name}
-                className="w-40 h-40 object-contain mx-auto"
+                className="h-64"
               />
-              <p className="text-red-700">
-                <strong className="text-red-700">Name:</strong>{" "}
-                {playerPokemon.name}
-              </p>
-              <p>
-                <strong className="text-red-700">Total Stats:</strong>{" "}
-                {calculateTotalStats(playerPokemon)}
-              </p>
-              {playerPokemon.stats.map((stat, index) => (
-                <p key={index} className="text-red-700">
-                  {stat.stat.name}: {stat.base_stat}
-                </p>
-              ))}
+              <div className="mt-4 w-full flex flex-col items-start">
+                <div className="flex gap-2 items-center w-full justify-end">
+                  <progress
+                    className="progress progress-error w-56 bg-white"
+                    value={playerHealth}
+                    max={playerPokemon.stats[0].base_stat}
+                  ></progress>
+                  <span className="font-medium text-white">HP</span>
+                </div>
+                <h2 className="text-xl text-white font-medium capitalize">
+                  {playerPokemon.name}
+                </h2>
+              </div>
             </div>
-            <div className="gap-2">
+
+            {/* Enemy's Pokemon */}
+            <div className="flex flex-col items-end absolute bottom-20 right-40">
               <img
-                src=".\src\assets\image\flash.gif"
-                width={400}
-                alt="war-started-flash"
-              />
-            </div>
-            <div className="text-center bg-black">
-              <h2 className="text-red-700 text-xl font-bold">Enemy Pokémon</h2>
-              <img
-                src={enemyPokemon.sprites.front_default}
+                src={getPokemonImageUrl(enemyPokemon)}
                 alt={enemyPokemon.name}
-                className="w-40 h-40 object-contain mx-auto"
+                className="h-64"
               />
-              <p className="text-red-700">
-                <strong className="text-red-700">Name:</strong>{" "}
-                {enemyPokemon.name}
-              </p>
-              <p>
-                <strong className="text-red-700">Total Stats:</strong>{" "}
-                {calculateTotalStats(enemyPokemon)}
-              </p>
-              {enemyPokemon.stats.map((stat, index) => (
-                <p key={index} className="text-red-700">
-                  {stat.stat.name}: {stat.base_stat}
-                </p>
-              ))}
+              <div className="mt-4 w-full flex flex-col items-end">
+                <div className="flex gap-2 items-center w-full justify-end">
+                  <span className="font-medium text-white">HP</span>
+                  <progress
+                    className="progress progress-error w-56 bg-white"
+                    value={enemyHealth}
+                    max={enemyPokemon.stats[0].base_stat}
+                  ></progress>
+                </div>
+                <h2 className="text-xl text-white font-medium capitalize">
+                  {enemyPokemon.name}
+                </h2>
+              </div>
             </div>
           </>
         )}
-      </div>
 
-      {/* Show the battle result */}
-      {enemyPokemon && (
-        <div className="mt-4 text-3xl  text-center text-red-700 font-bold">
-          {result}
-        </div>
-      )}
+        {/* Show result modal */}
+        {openModal && (
+          <FightResultModal winner={winner} playerPokemon={playerPokemon} />
+        )}
+      </div>
     </div>
   );
 };
