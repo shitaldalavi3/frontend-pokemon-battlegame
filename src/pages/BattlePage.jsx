@@ -72,10 +72,10 @@ const BattlePage = () => {
         },
         body: JSON.stringify({
           username,
-          score: scoreChange,
           battles,
-          won,
           lost,
+          won,
+          score: scoreChange,
         }),
       });
 
