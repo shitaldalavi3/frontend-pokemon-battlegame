@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import PokemonCategory from "./PokemonCategory";
 import PokemonDetailsModal from "./PokemonDetailsModal";
+import MyRoster from "./MyRoster";
 
 // Import background images for different Pokémon types
 import normalbg from "../assets/card_bg/normal_bgpng.png";
@@ -39,6 +40,7 @@ const HomePage = () => {
   const [selectedPokemon, setSelectedPokemon] = useState(null); // Pokémon selected to view in modal
   const [isModalOpen, setIsModalOpen] = useState(false); // Controls whether modal is open or not
   const [username, setUsername] = useState(""); // Stores username from localStorage
+  const [roster, setRoster] = useState([]);
   const navigate = useNavigate();
 
   // Fetch detailed Pokémon data for each Pokémon
@@ -139,6 +141,16 @@ const HomePage = () => {
         pokemon.name.toLowerCase().includes(term)
       );
       setFilteredPokemon(filteredBySearch);
+    }
+  };
+
+  const addPokemonToRoster = (pokemon) => {
+    if (!roster.includes(pokemon)) {
+      const updatedRoster = [...roster, pokemon];
+      setRoster(updatedRoster);
+      localStorage.setItem("roster", JSON.stringify(updatedRoster));
+    } else {
+      console.log(`${pokemon} is already in your roster!`);
     }
   };
 
@@ -306,12 +318,12 @@ const HomePage = () => {
                     <button className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-400 transition">
                       Play
                     </button>
-                    <Link
-                      to="/myroster"
+                    <button
+                      onClick={() => addPokemonToRoster(pokemon.name)}
                       className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-400 transition"
                     >
                       Add to Roster
-                    </Link>
+                    </button>
                   </div>
                 </div>
               ))}
