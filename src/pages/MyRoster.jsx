@@ -137,7 +137,6 @@ const MyRoster = () => {
 
   return (
     <>
-      {/* Navigation Bar */}
        {/* Navigation Bar */}
        <div
         className="sticky top-0 z-10 bg-red-700 p-5 w-full"

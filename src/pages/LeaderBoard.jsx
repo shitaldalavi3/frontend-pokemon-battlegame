@@ -11,7 +11,7 @@ const LeaderBoard = () => {
   useEffect(() => {
     const fetchLeaderboardData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/leaderboard");
+        const response = await fetch("https://backend-pockemon-battlegame.onrender.com/leaderboard");
         const data = await response.json();
         setLeaderboardData(data);
         setLoading(false);

@@ -99,7 +99,7 @@ const BattlePage = () => {
   // Function to update leaderboard
   const updateLeaderboard = async (username, score, battles, won, lost) => {
     try {
-      const response = await fetch("http://localhost:8080/leaderboard", {
+      const response = await fetch("https://backend-pockemon-battlegame.onrender.com/leaderboard", {
         method: "POST", // Use POST to either create or update
         headers: {
           "Content-Type": "application/json",
