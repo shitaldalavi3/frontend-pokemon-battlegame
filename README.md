@@ -23,3 +23,7 @@ pokemon.url.split("/"): This part of the code takes the url property from the po
 [6]: After splitting the URL, we access the 6th element (index 6) of the resulting array. In the example URL above, this corresponds to the string "25"—which represents the Pokémon’s unique identifier (often referred to as the Pokémon’s “Pokédex number”).
 getPokemonImageUrl(): This is likely a custom function or method that retrieves the image URL for a specific Pokémon based on its identifier. It’s not a standard JavaScript function; rather, it’s assumed to be defined elsewhere in the code. The purpose of this function is to generate the complete image URL for the Pokémon with the given identifier.
 In summary, this line of code takes a Pokémon object, extracts its URL, splits it into parts, and then uses the 6th part (the Pokémon’s identifier) to fetch the corresponding image URL. The actual implementation of getPokemonImageUrl() would involve constructing the full image URL based on the identifier.
+
+### Public/\_redirects
+
+- /\* /index.html 200
