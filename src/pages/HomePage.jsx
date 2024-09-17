@@ -261,7 +261,7 @@ const HomePage = () => {
 
           <div className="w-auto text-white text-right">
             <div>
-              Hello, <span className="font-bold text-white">{username}</span>
+              Welcome, <span className="font-bold text-white">{username}</span>
             </div>
             <div className="mt-2 flex space-x-4">
               <Link
