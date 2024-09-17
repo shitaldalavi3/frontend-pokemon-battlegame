@@ -11,7 +11,9 @@ const LeaderBoard = () => {
   useEffect(() => {
     const fetchLeaderboardData = async () => {
       try {
-        const response = await fetch("https://backend-pockemon-battlegame.onrender.com/leaderboard");
+        const response = await fetch(
+          "https://backend-pockemon-battlegame-5tjx.onrender.com/leaderboard"
+        );
         const data = await response.json();
         setLeaderboardData(data);
         setLoading(false);
@@ -54,35 +56,45 @@ const LeaderBoard = () => {
                 >
                   <td
                     className={`p-4 text-white border-b-2 border-white ${
-                      username === player.username ? "font-extrabold" : "font-normal"
+                      username === player.username
+                        ? "font-extrabold"
+                        : "font-normal"
                     }`}
                   >
                     {player.username}
                   </td>
                   <td
                     className={`p-4 text-white border-b-2 border-white ${
-                      username === player.username ? "font-extrabold" : "font-normal"
+                      username === player.username
+                        ? "font-extrabold"
+                        : "font-normal"
                     }`}
                   >
                     {player.battles}
                   </td>
                   <td
                     className={`p-4 text-white border-b-2 border-white ${
-                      username === player.username ? "font-extrabold" : "font-normal"
+                      username === player.username
+                        ? "font-extrabold"
+                        : "font-normal"
                     }`}
                   >
                     {player.won}
                   </td>
                   <td
                     className={`p-4 text-white border-b-2 border-white ${
-                      username === player.username ? "font-extrabold" : "font-normal"
+                      username === player.username
+                        ? "font-extrabold"
+                        : "font-normal"
                     }`}
                   >
                     {player.lost}
                   </td>
                   <td
                     className={`p-4 text-white border-b-2 border-white ${
-                      username === player.username ? "font-extrabold" : "font-normal"
+                      username === player.username
+                        ? "font-extrabold"
+                        : "font-normal"
                     }`}
                   >
                     {player.score}
