@@ -49,7 +49,7 @@ const LeaderBoard = () => {
                 <tr
                   key={player._id}
                   className={`${
-                    username === player.username ? "bg-red-400" : ""
+                    username === player.username ? "bg-red-700" : ""
                   }`}
                 >
                   <td
